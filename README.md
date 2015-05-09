@@ -19,3 +19,4 @@ To fetch dependencies:
 
 1. For picture exercise, `$go get golang.org/x/tour/pic`
 2. For maps exercise, `$go get golang.org/x/tour/wc`
+3. For reader exercise, `$go get golang.org/x/tour/reader`
