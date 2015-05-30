@@ -7,13 +7,12 @@ To get all the codes, clone this repository to your `$GOPATH` workspace,
 
 `$git clone https://github.com:ihcsim/golang-tutorial.git $GOPATH/src`
 
-To install the answer of an exercise,
+To run the answer of an exercise,
 
-`$go install github.com/ihcsim/golang-tutorial/<folder_of_exercise>`
-
-To run the answer of an exercise (assuming `$GOPATH/bin` is in your `$PATH`),
-
-`$<exercise_name>`
+```
+$ cd github.com/ihcsim/golang-tutorial/<folder_of_exercise>
+$ go run main.go
+```
  
 To fetch dependencies:
 
