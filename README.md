@@ -7,6 +7,20 @@ To get all the codes, clone this repository to your `$GOPATH` workspace,
 
 `$git clone https://github.com:ihcsim/golang-tutorial.git $GOPATH/src`
 
+Exercise | Package | URL
+-------- | ------- | ---
+Loops and Functions | `loop` | https://tour.golang.org/flowcontrol/8
+Slices | `picture` | https://tour.golang.org/moretypes/14
+Maps | `maps` | https://tour.golang.org/moretypes/19
+Fibonacci closure | `closure` | https://tour.golang.org/moretypes/22
+Stringers | `interface` | https://tour.golang.org/methods/7
+Errors | `error` | https://tour.golang.org/methods/9
+Readers | `reader` | https://tour.golang.org/methods/11
+rot13Reader | `rot13reader` | https://tour.golang.org/methods/12
+Http Handlers | `httphandlers` | https://tour.golang.org/methods/14
+Images | `images` | https://tour.golang.org/methods/16
+Equivalent Binary Trees | `binarytree` | https://tour.golang.org/concurrency/7
+
 To run the answer of an exercise,
 
 ```
