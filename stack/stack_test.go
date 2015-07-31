@@ -98,6 +98,52 @@ func TestWhenPop_ElementCountsDecrements(t *testing.T) {
 	}
 }
 
+func TestWhenPushMultipleElements_ThenTopReturnsTheLastElement(t *testing.T) {
+	setUp()
+
+	var tests = []struct {
+		input    []int
+		expected int
+	}{
+		{input: []int{1}, expected: 1},
+		{input: []int{1, 2}, expected: 2},
+		{input: []int{1, 2, 3}, expected: 3},
+		{input: []int{1, 2, 3, 4}, expected: 4},
+		{input: []int{1, 2, 3, 4, 5}, expected: 5},
+	}
+
+	for _, test := range tests {
+		stack.Push(test.input...)
+		if stack.Top() != test.expected {
+			t.Errorf("Expected top to return %d, but get %d\n", stack.Top(), test.expected)
+		}
+	}
+}
+
+func TestWhenTop_StackSizeDoesNotChange(t *testing.T) {
+	setUp()
+
+	var tests = []struct {
+		input         []int
+		expected_size int
+	}{
+		{input: []int{1}, expected_size: 1},
+		{input: []int{1, 2}, expected_size: 2},
+		{input: []int{1, 2, 3}, expected_size: 3},
+		{input: []int{1, 2, 3, 4}, expected_size: 4},
+		{input: []int{1, 2, 3, 4, 5}, expected_size: 5},
+	}
+
+	for _, test := range tests {
+		stack.Push(test.input...)
+		stack.Top()
+		if stack.Count() != test.expected_size {
+			t.Errorf("Expected stack size to be %d, but get %d\n", stack.Count(), test.expected_size)
+		}
+		stack.Clear()
+	}
+}
+
 func TestWhenGivenEmptyStack_ThenPopReturnsAnError(t *testing.T) {
 	setUp()
 

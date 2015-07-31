@@ -25,10 +25,18 @@ func (s *Stack) Pop() (int, error) {
 	return head, nil
 }
 
+func (s *Stack) Top() int {
+	return (*s)[len(*s)-1]
+}
+
 func (s *Stack) Empty() bool {
 	return len(*s) == 0
 }
 
 func (s *Stack) Count() int {
 	return len(*s)
+}
+
+func (s *Stack) Clear() {
+	(*s) = New()
 }
