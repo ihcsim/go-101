@@ -5,7 +5,7 @@ Some basics on golang including answers to exercises on the golang tour.
 
 To get all the codes, clone this repository to your `$GOPATH` workspace,
 
-`$git clone https://github.com:ihcsim/golang-tutorial.git $GOPATH/src`
+`$ go get github.com/ihcsim/golang-tutorial`
 
 Exercise | Package | URL
 -------- | ------- | ---
