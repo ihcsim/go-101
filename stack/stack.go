@@ -2,20 +2,15 @@ package stack
 
 import "errors"
 
-type Stack []int
+type Stack []interface{}
 
-func New() Stack {
-	var stack = []int{}
-	return stack
-}
-
-func (s *Stack) Push(inputs ...int) {
+func (s *Stack) Push(inputs ...interface{}) {
 	for _, item := range inputs {
 		*s = append(*s, item)
 	}
 }
 
-func (s *Stack) Pop() (int, error) {
+func (s *Stack) Pop() (interface{}, error) {
 	if s.Empty() {
 		return -1, errors.New("Unable to pop from an empty stack.")
 	}
@@ -25,8 +20,11 @@ func (s *Stack) Pop() (int, error) {
 	return head, nil
 }
 
-func (s *Stack) Top() int {
-	return (*s)[len(*s)-1]
+func (s *Stack) Top() (interface{}, error) {
+	if s.Empty() {
+		return nil, errors.New("Unable to top from an empty stack")
+	}
+	return (*s)[len(*s)-1], nil
 }
 
 func (s *Stack) Empty() bool {
@@ -38,5 +36,5 @@ func (s *Stack) Count() int {
 }
 
 func (s *Stack) Clear() {
-	(*s) = New()
+	(*s) = []interface{}{}
 }
