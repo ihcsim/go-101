@@ -7,8 +7,8 @@ To get all the codes, clone this repository to your `$GOPATH` workspace,
 
 `$ go get github.com/ihcsim/golang-tutorial`
 
-Exercise | Package | URL
--------- | ------- | ---
+Exercise | Package | Exercise URL
+-------- | ------- | ------------
 Loops and Functions | `loop` | https://tour.golang.org/flowcontrol/8
 Slices | `picture` | https://tour.golang.org/moretypes/14
 Maps | `maps` | https://tour.golang.org/moretypes/19
@@ -33,3 +33,10 @@ To fetch dependencies:
 1. For picture exercise, `$go get golang.org/x/tour/pic`
 2. For maps exercise, `$go get golang.org/x/tour/wc`
 3. For reader exercise, `$go get golang.org/x/tour/reader`
+
+# Other Examples
+
+Package | Description
+------- | -----------
+`stack` | A stack data structure demonstrating the usage of `interface{}`
+
