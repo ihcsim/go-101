@@ -7,18 +7,33 @@ const (
 	PREMIUM_DISCOUNT
 )
 
-func standardDiscount() int {
-	return STANDARD_DISCOUNT
+const (
+	STANDARD_DISCOUNT_RATE = 0.1
+	SILVER_DISCOUNT_RATE   = 0.15
+	GOLD_DISCOUNT_RATE     = 0.20
+	PREMIUM_DISCOUNT_RATE  = 0.25
+)
+
+func standardDiscount() (rate float64, strategyCode int) {
+	rate = STANDARD_DISCOUNT_RATE
+	strategyCode = STANDARD_DISCOUNT
+	return
 }
 
-func silverDiscount() int {
-	return SILVER_DISCOUNT
+func silverDiscount() (rate float64, strategyCode int) {
+	rate = SILVER_DISCOUNT_RATE
+	strategyCode = SILVER_DISCOUNT
+	return
 }
 
-func goldDiscount() int {
-	return GOLD_DISCOUNT
+func goldDiscount() (rate float64, strategyCode int) {
+	rate = GOLD_DISCOUNT_RATE
+	strategyCode = GOLD_DISCOUNT
+	return
 }
 
-func premiumDiscount() int {
-	return PREMIUM_DISCOUNT
+func premiumDiscount() (rate float64, strategyCode int) {
+	rate = PREMIUM_DISCOUNT_RATE
+	strategyCode = PREMIUM_DISCOUNT
+	return
 }

@@ -1,14 +1,15 @@
 package discountcalculator
 
 type discountCalculator struct {
-	strategy func() int
+	strategy     func() (float64, int)
+	strategyCode int
 }
 
 func New() *discountCalculator {
 	return &discountCalculator{}
 }
 
-func (calculator *discountCalculator) CalcFor(customer *customer) {
+func (calculator *discountCalculator) RateFor(customer *customer) float64 {
 	switch c := customer.category; c {
 	case STANDARD:
 		calculator.strategy = standardDiscount
@@ -19,4 +20,8 @@ func (calculator *discountCalculator) CalcFor(customer *customer) {
 	case PREMIUM:
 		calculator.strategy = premiumDiscount
 	}
+
+	rate, code := calculator.strategy()
+	calculator.strategyCode = code
+	return rate
 }
