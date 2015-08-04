@@ -5,6 +5,7 @@ const (
 	SILVER_DISCOUNT
 	GOLD_DISCOUNT
 	PREMIUM_DISCOUNT
+	BIRTHDAY_DISCOUNT
 )
 
 const (
@@ -12,6 +13,7 @@ const (
 	SILVER_DISCOUNT_RATE   = 0.15
 	GOLD_DISCOUNT_RATE     = 0.20
 	PREMIUM_DISCOUNT_RATE  = 0.25
+	BIRTHDAY_DISCOUNT_RATE = 0.05
 )
 
 func standardDiscount() (rate float64, strategyCode int) {
@@ -35,5 +37,11 @@ func goldDiscount() (rate float64, strategyCode int) {
 func premiumDiscount() (rate float64, strategyCode int) {
 	rate = PREMIUM_DISCOUNT_RATE
 	strategyCode = PREMIUM_DISCOUNT
+	return
+}
+
+func birthdayDiscount() (rate float64, strategyCode int) {
+	rate = BIRTHDAY_DISCOUNT_RATE
+	strategyCode = BIRTHDAY_DISCOUNT
 	return
 }
