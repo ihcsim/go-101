@@ -1,8 +1,7 @@
 package discountcalculator
 
 type discountCalculator struct {
-	strategy     func() (rate float64, strategyCode int)
-	strategyCode int
+	strategy func() (rate float64, strategyCode int)
 }
 
 func New() *discountCalculator {
