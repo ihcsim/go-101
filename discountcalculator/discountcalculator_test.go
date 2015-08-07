@@ -2,50 +2,52 @@ package discountcalculator
 
 import "testing"
 
-func TestRateFor_WhenGivenCustomerType_ThenReturnsTheCorrectDiscountRateAndType(t *testing.T) {
+func TestDiscountFor_GivenACustomer_ThenReturnsTheCorrectDiscountRateAndCode(t *testing.T) {
 	var tests = []struct {
 		customer             *customer
-		expectedRate         float64
-		expectedDiscountType int
+		expectedDiscountRate float64
+		expectedDiscountCode int
 	}{
-		{customer: NewCustomer(STANDARD), expectedRate: 0.1, expectedDiscountType: STANDARD_DISCOUNT},
-		{customer: NewCustomer(SILVER), expectedRate: 0.15, expectedDiscountType: SILVER_DISCOUNT},
-		{customer: NewCustomer(GOLD), expectedRate: 0.2, expectedDiscountType: GOLD_DISCOUNT},
-		{customer: NewCustomer(PREMIUM), expectedRate: 0.25, expectedDiscountType: PREMIUM_DISCOUNT},
+		{customer: NewCustomer(STANDARD), expectedDiscountRate: 0.1, expectedDiscountCode: STANDARD_DISCOUNT},
+		{customer: NewCustomer(SILVER), expectedDiscountRate: 0.15, expectedDiscountCode: SILVER_DISCOUNT},
+		{customer: NewCustomer(GOLD), expectedDiscountRate: 0.2, expectedDiscountCode: GOLD_DISCOUNT},
+		{customer: NewCustomer(PREMIUM), expectedDiscountRate: 0.25, expectedDiscountCode: PREMIUM_DISCOUNT},
 	}
 
 	discountCalculator := New()
 	for _, test := range tests {
-		if rate := discountCalculator.RateFor(test.customer); rate != test.expectedRate {
-			t.Errorf("Expected discount rate to be %.2f, but get %.2f\n", test.expectedRate, rate)
+		discount := discountCalculator.DiscountFor(test.customer)
+		if discount.rate != test.expectedDiscountRate {
+			t.Errorf("Expected discount rate to be %.2f, but get %.2f\n", test.expectedDiscountRate, discount.rate)
 		}
-		if discountType := discountCalculator.strategyCode; discountType != test.expectedDiscountType {
-			t.Errorf("Expected calculation strategy to be %d, but get %d\n", test.expectedDiscountType, discountType)
+		if discount.code != test.expectedDiscountCode {
+			t.Errorf("Expected discount code to be %d, but get %d\n", test.expectedDiscountCode, discount.code)
 		}
 	}
 }
 
-func TestRateWithCouponFor_WhenGivenCustomerAndCouponType_ThenReturnsTheCorrectDiscountRateAndType(t *testing.T) {
+func TestSpecialDiscountFor_WhenCustomerIsGivenSpecialDiscount_ThenReturnsTheCorrectDiscountRateAndCode(t *testing.T) {
 	var tests = []struct {
 		customer             *customer
 		couponType           int
-		expectedRate         float64
-		expectedDiscountType int
+		expectedDiscountRate float64
+		expectedDiscountCode int
 	}{
-		{customer: NewCustomer(STANDARD), couponType: BIRTHDAY_ANNIVERSARY, expectedRate: 0.15, expectedDiscountType: BIRTHDAY_DISCOUNT},
-		{customer: NewCustomer(SILVER), couponType: BIRTHDAY_ANNIVERSARY, expectedRate: 0.20, expectedDiscountType: BIRTHDAY_DISCOUNT},
-		{customer: NewCustomer(GOLD), couponType: BIRTHDAY_ANNIVERSARY, expectedRate: 0.25, expectedDiscountType: BIRTHDAY_DISCOUNT},
-		{customer: NewCustomer(PREMIUM), couponType: BIRTHDAY_ANNIVERSARY, expectedRate: 0.30, expectedDiscountType: BIRTHDAY_DISCOUNT},
+		{customer: NewCustomer(STANDARD), couponType: BIRTHDAY_ANNIVERSARY, expectedDiscountRate: 0.15, expectedDiscountCode: BIRTHDAY_DISCOUNT},
+		{customer: NewCustomer(SILVER), couponType: BIRTHDAY_ANNIVERSARY, expectedDiscountRate: 0.20, expectedDiscountCode: BIRTHDAY_DISCOUNT},
+		{customer: NewCustomer(GOLD), couponType: BIRTHDAY_ANNIVERSARY, expectedDiscountRate: 0.25, expectedDiscountCode: BIRTHDAY_DISCOUNT},
+		{customer: NewCustomer(PREMIUM), couponType: BIRTHDAY_ANNIVERSARY, expectedDiscountRate: 0.30, expectedDiscountCode: BIRTHDAY_DISCOUNT},
 	}
 
 	discountCalculator := New()
 	for _, test := range tests {
-		if rate := discountCalculator.RateWithCouponFor(test.customer, test.couponType); rate != test.expectedRate {
-			t.Errorf("Expected discount rate with promotion to be %.2f, but get %.2f", test.expectedRate, rate)
+		discount := discountCalculator.SpecialDiscountFor(test.customer, test.couponType)
+		if discount.rate != test.expectedDiscountRate {
+			t.Errorf("Expected discount rate with promotion to be %.2f, but get %.2f", test.expectedDiscountRate, discount.rate)
 		}
 
-		if discountType := discountCalculator.strategyCode; discountType != test.expectedDiscountType {
-			t.Errorf("Expected discount type to be %d, but get %d\n", test.expectedDiscountType, discountType)
+		if discount.code != test.expectedDiscountCode {
+			t.Errorf("Expected discount code to be %d, but get %d\n", test.expectedDiscountCode, discount.code)
 		}
 	}
 }

@@ -9,36 +9,32 @@ func New() *discountCalculator {
 	return &discountCalculator{}
 }
 
-func (calculator *discountCalculator) RateFor(customer *customer) float64 {
+func (calculator *discountCalculator) DiscountFor(customer *customer) *discount {
 	switch c := customer.category; c {
 	case STANDARD:
-		calculator.strategy = standardDiscount
+		return NewDiscount(STANDARD_DISCOUNT)
 	case SILVER:
-		calculator.strategy = silverDiscount
+		return NewDiscount(SILVER_DISCOUNT)
 	case GOLD:
-		calculator.strategy = goldDiscount
+		return NewDiscount(GOLD_DISCOUNT)
 	case PREMIUM:
-		calculator.strategy = premiumDiscount
+		return NewDiscount(PREMIUM_DISCOUNT)
 	}
 
-	rate, code := calculator.strategy()
-	calculator.strategyCode = code
-	return rate
+	return nil
 }
 
-func (calculator *discountCalculator) RateWithCouponFor(customer *customer, couponType int) float64 {
-	customerRate := calculator.RateFor(customer)
+func (calculator *discountCalculator) SpecialDiscountFor(customer *customer, couponType int) *discount {
+	customerRate := calculator.DiscountFor(customer)
 
+	var d *discount
 	switch couponType {
 	case BIRTHDAY_ANNIVERSARY:
-		calculator.strategy = birthdayDiscount
+		d = NewDiscount(BIRTHDAY_DISCOUNT)
 	}
 
-	couponRate, code := calculator.strategy()
-	calculator.strategyCode = code
-
-	decimal := 2
-	return calculator.addRates(customerRate, couponRate, decimal)
+	d.rate = calculator.addRates(customerRate.rate, d.rate, 2)
+	return d
 }
 
 func (calculator *discountCalculator) addRates(rate1, rate2 float64, decimal int) float64 {
