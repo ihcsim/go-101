@@ -51,3 +51,24 @@ func TestSpecialDiscountFor_WhenCustomerIsGivenSpecialDiscount_ThenReturnsTheCor
 		}
 	}
 }
+
+func TestBalanceFor_GivenACustomer_ThenPicksTheCorrectCalculationStrategy(t *testing.T) {
+	var tests = []struct {
+		customer             *customer
+		expectedStrategyCode int
+	}{
+		{customer: NewCustomer(STANDARD), expectedStrategyCode: STANDARD_CALCULATION},
+		{customer: NewCustomer(SILVER), expectedStrategyCode: SILVER_CALCULATION},
+		{customer: NewCustomer(GOLD), expectedStrategyCode: GOLD_CALCULATION},
+		{customer: NewCustomer(PREMIUM), expectedStrategyCode: PREMIUM_CALCULATION},
+	}
+
+	invoiceTotal := 10.0
+	for _, test := range tests {
+		discountCalculator := New()
+		discountCalculator.ComputeBalance(test.customer, invoiceTotal)
+		if discountCalculator.strategyCode != test.expectedStrategyCode {
+			t.Errorf("Expected calculation strategy to be %d, but get %d", test.expectedStrategyCode, discountCalculator)
+		}
+	}
+}
