@@ -25,7 +25,7 @@ func (calculator *discountCalculator) DiscountFor(customer *customer) *discount 
 }
 
 func (calculator *discountCalculator) SpecialDiscountFor(customer *customer, couponType int) *discount {
-	customerRate := calculator.DiscountFor(customer)
+	customerDiscount := calculator.DiscountFor(customer)
 
 	var d *discount
 	switch couponType {
@@ -33,11 +33,7 @@ func (calculator *discountCalculator) SpecialDiscountFor(customer *customer, cou
 		d = NewDiscount(BIRTHDAY_DISCOUNT)
 	}
 
-	d.rate = calculator.addRates(customerRate.rate, d.rate, 2)
+	decimal := 2
+	d.addRates(customerDiscount, decimal)
 	return d
-}
-
-func (calculator *discountCalculator) addRates(rate1, rate2 float64, decimal int) float64 {
-	precision := 10 * float64(decimal)
-	return ((rate1 * precision) + (rate2 * precision)) / precision
 }

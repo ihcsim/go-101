@@ -63,3 +63,8 @@ func (d *discount) birthdaySpecial() {
 	d.rate = BIRTHDAY_DISCOUNT_RATE
 	d.code = BIRTHDAY_DISCOUNT
 }
+
+func (d *discount) addRates(di *discount, decimal int) {
+	precision := 10 * float64(decimal)
+	d.rate = ((d.rate * precision) + (di.rate * precision)) / precision
+}
