@@ -8,7 +8,7 @@ func New() *discountCalculator {
 	return &discountCalculator{}
 }
 
-func (calculator *discountCalculator) DiscountFor(customer *customer) *discount {
+func (calculator *discountCalculator) Discount(customer *customer) *discount {
 	switch c := customer.category; c {
 	case STANDARD:
 		return NewDiscount(STANDARD_DISCOUNT)
@@ -23,8 +23,8 @@ func (calculator *discountCalculator) DiscountFor(customer *customer) *discount 
 	return nil
 }
 
-func (calculator *discountCalculator) SpecialDiscountFor(customer *customer, couponType int) *discount {
-	customerDiscount := calculator.DiscountFor(customer)
+func (calculator *discountCalculator) SpecialDiscount(customer *customer, couponType int) *discount {
+	customerDiscount := calculator.Discount(customer)
 
 	var d *discount
 	switch couponType {
@@ -38,7 +38,7 @@ func (calculator *discountCalculator) SpecialDiscountFor(customer *customer, cou
 }
 
 func (calculator *discountCalculator) Checkout(customer *customer, invoiceTotal float64) (balance float64, checkoutCode int) {
-	discount := calculator.DiscountFor(customer)
+	discount := calculator.Discount(customer)
 
 	switch c := customer.category; c {
 	case STANDARD:

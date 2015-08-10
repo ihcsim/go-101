@@ -2,7 +2,7 @@ package discountcalculator
 
 import "testing"
 
-func TestDiscountFor_GivenACustomer_ThenReturnsTheCorrectDiscountRateAndCode(t *testing.T) {
+func TestDiscount_ReturnsTheCorrectDiscountRateAndCode(t *testing.T) {
 	var tests = []struct {
 		customer             *customer
 		expectedDiscountRate float64
@@ -16,7 +16,7 @@ func TestDiscountFor_GivenACustomer_ThenReturnsTheCorrectDiscountRateAndCode(t *
 
 	discountCalculator := New()
 	for _, test := range tests {
-		discount := discountCalculator.DiscountFor(test.customer)
+		discount := discountCalculator.Discount(test.customer)
 		if discount.rate != test.expectedDiscountRate {
 			t.Errorf("Expected discount rate to be %.2f, but get %.2f\n", test.expectedDiscountRate, discount.rate)
 		}
@@ -26,7 +26,7 @@ func TestDiscountFor_GivenACustomer_ThenReturnsTheCorrectDiscountRateAndCode(t *
 	}
 }
 
-func TestSpecialDiscountFor_WhenCustomerIsGivenSpecialDiscount_ThenReturnsTheCorrectDiscountRateAndCode(t *testing.T) {
+func TestSpecialDiscount_ReturnsTheCorrectDiscountRateAndCode(t *testing.T) {
 	var tests = []struct {
 		customer             *customer
 		couponType           int
@@ -41,7 +41,7 @@ func TestSpecialDiscountFor_WhenCustomerIsGivenSpecialDiscount_ThenReturnsTheCor
 
 	discountCalculator := New()
 	for _, test := range tests {
-		discount := discountCalculator.SpecialDiscountFor(test.customer, test.couponType)
+		discount := discountCalculator.SpecialDiscount(test.customer, test.couponType)
 		if discount.rate != test.expectedDiscountRate {
 			t.Errorf("Expected discount rate with promotion to be %.2f, but get %.2f", test.expectedDiscountRate, discount.rate)
 		}
@@ -52,7 +52,7 @@ func TestSpecialDiscountFor_WhenCustomerIsGivenSpecialDiscount_ThenReturnsTheCor
 	}
 }
 
-func TestCheckout_GivenACustomer_ThenReturnsTheCorrectCheckoutBalanceAndCode(t *testing.T) {
+func TestCheckout_ReturnsTheCorrectCheckoutBalanceAndCode(t *testing.T) {
 	var tests = []struct {
 		customer                *customer
 		invoiceTotal            float64
