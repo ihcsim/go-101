@@ -40,5 +40,5 @@ To fetch dependencies:
 
 Package | Description
 ------- | -----------
-`stack` | A stack data structure demonstrating the usage of `interface{}`
-
+`stack` | A stack data structure demonstrating the usage of `interface{}`.
+`discountcalculator` | A discount calculator demonstrating the usage of function values and closures.
