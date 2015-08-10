@@ -53,3 +53,20 @@ func (calculator *discountCalculator) Checkout(customer *customer, invoiceTotal 
 
 	return calculator.strategy(invoiceTotal, discount)
 }
+
+func (calculator *discountCalculator) CheckoutWithSpecialDiscount(customer *customer, couponType int, invoiceTotal float64) (balance float64, checkoutCode int) {
+	discount := calculator.SpecialDiscount(customer, couponType)
+
+	switch c := customer.category; c {
+	case STANDARD:
+		calculator.strategy = standardCheckout
+	case SILVER:
+		calculator.strategy = standardCheckout
+	case GOLD:
+		calculator.strategy = expressCheckout
+	case PREMIUM:
+		calculator.strategy = expressCheckout
+	}
+
+	return calculator.strategy(invoiceTotal, discount)
+}
