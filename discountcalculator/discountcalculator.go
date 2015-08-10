@@ -1,8 +1,7 @@
 package discountcalculator
 
 type discountCalculator struct {
-	strategy     func(invoiceTotal float64, d *discount) (balance float64)
-	strategyCode int
+	strategy func(invoiceTotal float64, d *discount) (balance float64, checkoutCode int)
 }
 
 func New() *discountCalculator {
@@ -38,46 +37,19 @@ func (calculator *discountCalculator) SpecialDiscountFor(customer *customer, cou
 	return d
 }
 
-func (calculator *discountCalculator) ComputeBalance(customer *customer, invoiceTotal float64) float64 {
+func (calculator *discountCalculator) Checkout(customer *customer, invoiceTotal float64) (balance float64, checkoutCode int) {
 	discount := calculator.DiscountFor(customer)
 
 	switch c := customer.category; c {
 	case STANDARD:
-		calculator.strategy = standardCalculation
-		calculator.strategyCode = STANDARD_CALCULATION
+		calculator.strategy = standardCheckout
 	case SILVER:
-		calculator.strategy = silverCalculation
-		calculator.strategyCode = SILVER_CALCULATION
+		calculator.strategy = standardCheckout
 	case GOLD:
-		calculator.strategy = goldCalculation
-		calculator.strategyCode = GOLD_CALCULATION
+		calculator.strategy = expressCheckout
 	case PREMIUM:
-		calculator.strategy = premiumCalculation
-		calculator.strategyCode = PREMIUM_CALCULATION
+		calculator.strategy = expressCheckout
 	}
 
 	return calculator.strategy(invoiceTotal, discount)
-}
-
-const (
-	STANDARD_CALCULATION = iota + 1
-	SILVER_CALCULATION
-	GOLD_CALCULATION
-	PREMIUM_CALCULATION
-)
-
-func standardCalculation(invoiceTotal float64, d *discount) float64 {
-	return 0.0
-}
-
-func silverCalculation(invoiceTotal float64, d *discount) float64 {
-	return 0.0
-}
-
-func goldCalculation(invoiceTotal float64, d *discount) float64 {
-	return 0.0
-}
-
-func premiumCalculation(invoiceTotal float64, d *discount) float64 {
-	return 0.0
 }

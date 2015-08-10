@@ -52,23 +52,29 @@ func TestSpecialDiscountFor_WhenCustomerIsGivenSpecialDiscount_ThenReturnsTheCor
 	}
 }
 
-func TestBalanceFor_GivenACustomer_ThenPicksTheCorrectCalculationStrategy(t *testing.T) {
+func TestCheckout_GivenACustomer_ThenReturnsTheCorrectCheckoutBalanceAndCode(t *testing.T) {
 	var tests = []struct {
-		customer             *customer
-		expectedStrategyCode int
+		customer                *customer
+		invoiceTotal            float64
+		expectedCheckoutBalance float64
+		expectedCheckoutCode    int
 	}{
-		{customer: NewCustomer(STANDARD), expectedStrategyCode: STANDARD_CALCULATION},
-		{customer: NewCustomer(SILVER), expectedStrategyCode: SILVER_CALCULATION},
-		{customer: NewCustomer(GOLD), expectedStrategyCode: GOLD_CALCULATION},
-		{customer: NewCustomer(PREMIUM), expectedStrategyCode: PREMIUM_CALCULATION},
+		{customer: NewCustomer(STANDARD), invoiceTotal: 10.0, expectedCheckoutBalance: 9.0, expectedCheckoutCode: STANDARD_CHECKOUT},
+		{customer: NewCustomer(SILVER), invoiceTotal: 10.0, expectedCheckoutBalance: 8.50, expectedCheckoutCode: STANDARD_CHECKOUT},
+		{customer: NewCustomer(GOLD), invoiceTotal: 10.0, expectedCheckoutBalance: 8.00, expectedCheckoutCode: EXPRESS_CHECKOUT},
+		{customer: NewCustomer(PREMIUM), invoiceTotal: 10.0, expectedCheckoutBalance: 7.50, expectedCheckoutCode: EXPRESS_CHECKOUT},
 	}
 
 	invoiceTotal := 10.0
 	for _, test := range tests {
 		discountCalculator := New()
-		discountCalculator.ComputeBalance(test.customer, invoiceTotal)
-		if discountCalculator.strategyCode != test.expectedStrategyCode {
-			t.Errorf("Expected calculation strategy to be %d, but get %d", test.expectedStrategyCode, discountCalculator)
+		balance, checkoutCode := discountCalculator.Checkout(test.customer, invoiceTotal)
+		if checkoutCode != test.expectedCheckoutCode {
+			t.Errorf("Expected checkout code to be %d, but get %d", test.expectedCheckoutCode, checkoutCode)
+		}
+
+		if balance != test.expectedCheckoutBalance {
+			t.Errorf("Expected checkout balance to be %.2f, but get %.2f", test.expectedCheckoutBalance, balance)
 		}
 	}
 }
