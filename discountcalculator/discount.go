@@ -1,12 +1,31 @@
 package discountcalculator
 
+type discountCode int
+
 const (
-	STANDARD_DISCOUNT = iota
+	STANDARD_DISCOUNT discountCode = iota
 	SILVER_DISCOUNT
 	GOLD_DISCOUNT
 	PREMIUM_DISCOUNT
 	BIRTHDAY_DISCOUNT
 )
+
+func (d discountCode) String() string {
+	switch d {
+	case STANDARD_DISCOUNT:
+		return "STANDARD_DISCOUNT"
+	case SILVER_DISCOUNT:
+		return "SILVER_DISCOUNT"
+	case GOLD_DISCOUNT:
+		return "GOLD_DISCOUNT"
+	case PREMIUM_DISCOUNT:
+		return "PREMIUM_DISCOUNT"
+	case BIRTHDAY_DISCOUNT:
+		return "BIRTHDAY_DISCOUNT"
+	}
+
+	return ""
+}
 
 const (
 	STANDARD_DISCOUNT_RATE = 0.1
@@ -18,12 +37,12 @@ const (
 
 type discount struct {
 	rate float64
-	code int
+	code discountCode
 }
 
-func NewDiscount(discountCode int) *discount {
+func NewDiscount(code discountCode) *discount {
 	d := discount{}
-	switch discountCode {
+	switch code {
 	case STANDARD_DISCOUNT:
 		d.standard()
 	case SILVER_DISCOUNT:

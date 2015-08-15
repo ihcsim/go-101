@@ -2,9 +2,9 @@ package discountcalculator
 
 const (
 	STANDARD = iota
-	SILVER   = iota
-	GOLD     = iota
-	PREMIUM  = iota
+	SILVER
+	GOLD
+	PREMIUM
 )
 
 type customer struct {

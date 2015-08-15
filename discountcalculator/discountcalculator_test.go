@@ -6,7 +6,7 @@ func TestDiscount_ReturnsTheCorrectDiscountRateAndCode(t *testing.T) {
 	var tests = []struct {
 		customer             *customer
 		expectedDiscountRate float64
-		expectedDiscountCode int
+		expectedDiscountCode discountCode
 	}{
 		{customer: NewCustomer(STANDARD), expectedDiscountRate: 0.1, expectedDiscountCode: STANDARD_DISCOUNT},
 		{customer: NewCustomer(SILVER), expectedDiscountRate: 0.15, expectedDiscountCode: SILVER_DISCOUNT},
@@ -21,7 +21,7 @@ func TestDiscount_ReturnsTheCorrectDiscountRateAndCode(t *testing.T) {
 			t.Errorf("Expected discount rate to be %.2f, but get %.2f\n", test.expectedDiscountRate, discount.rate)
 		}
 		if discount.code != test.expectedDiscountCode {
-			t.Errorf("Expected discount code to be %d, but get %d\n", test.expectedDiscountCode, discount.code)
+			t.Errorf("Expected discount code to be %s, but get %s\n", test.expectedDiscountCode, discount.code)
 		}
 	}
 }
@@ -31,7 +31,7 @@ func TestSpecialDiscount_ReturnsTheCorrectDiscountRateAndCode(t *testing.T) {
 		customer             *customer
 		couponType           int
 		expectedDiscountRate float64
-		expectedDiscountCode int
+		expectedDiscountCode discountCode
 	}{
 		{customer: NewCustomer(STANDARD), couponType: BIRTHDAY_ANNIVERSARY, expectedDiscountRate: 0.15, expectedDiscountCode: BIRTHDAY_DISCOUNT},
 		{customer: NewCustomer(SILVER), couponType: BIRTHDAY_ANNIVERSARY, expectedDiscountRate: 0.20, expectedDiscountCode: BIRTHDAY_DISCOUNT},
@@ -47,7 +47,7 @@ func TestSpecialDiscount_ReturnsTheCorrectDiscountRateAndCode(t *testing.T) {
 		}
 
 		if discount.code != test.expectedDiscountCode {
-			t.Errorf("Expected discount code to be %d, but get %d\n", test.expectedDiscountCode, discount.code)
+			t.Errorf("Expected discount code to be %s, but get %s\n", test.expectedDiscountCode, discount.code)
 		}
 	}
 }
@@ -57,7 +57,7 @@ func TestCheckout_ReturnsTheCorrectCheckoutBalanceAndCode(t *testing.T) {
 		customer                *customer
 		invoiceTotal            float64
 		expectedCheckoutBalance float64
-		expectedCheckoutCode    int
+		expectedCheckoutCode    checkoutCode
 	}{
 		{customer: NewCustomer(STANDARD), invoiceTotal: 10.0, expectedCheckoutBalance: 9.0, expectedCheckoutCode: STANDARD_CHECKOUT},
 		{customer: NewCustomer(SILVER), invoiceTotal: 10.0, expectedCheckoutBalance: 8.50, expectedCheckoutCode: STANDARD_CHECKOUT},
@@ -69,7 +69,7 @@ func TestCheckout_ReturnsTheCorrectCheckoutBalanceAndCode(t *testing.T) {
 		discountCalculator := New()
 		balance, checkoutCode := discountCalculator.Checkout(test.customer, test.invoiceTotal)
 		if checkoutCode != test.expectedCheckoutCode {
-			t.Errorf("Expected checkout code to be %d, but get %d", test.expectedCheckoutCode, checkoutCode)
+			t.Errorf("Expected checkout code to be %s, but get %s", test.expectedCheckoutCode, checkoutCode)
 		}
 
 		if balance != test.expectedCheckoutBalance {
@@ -84,7 +84,7 @@ func TestCheckoutWithSpecialDiscount_ReturnsTheCorrectCheckoutBalanceAndCode(t *
 		couponType              int
 		invoiceTotal            float64
 		expectedCheckoutBalance float64
-		expectedCheckoutCode    int
+		expectedCheckoutCode    checkoutCode
 	}{
 		{customer: NewCustomer(STANDARD), couponType: BIRTHDAY_ANNIVERSARY, invoiceTotal: 10.0, expectedCheckoutBalance: 8.50, expectedCheckoutCode: STANDARD_CHECKOUT},
 		{customer: NewCustomer(SILVER), couponType: BIRTHDAY_ANNIVERSARY, invoiceTotal: 10.0, expectedCheckoutBalance: 8.00, expectedCheckoutCode: STANDARD_CHECKOUT},
@@ -96,12 +96,11 @@ func TestCheckoutWithSpecialDiscount_ReturnsTheCorrectCheckoutBalanceAndCode(t *
 		discountCalculator := New()
 		balance, checkoutCode := discountCalculator.CheckoutWithSpecialDiscount(test.customer, test.couponType, test.invoiceTotal)
 		if checkoutCode != test.expectedCheckoutCode {
-			t.Errorf("Expected checkout code to be %d, but get %d", test.expectedCheckoutCode, checkoutCode)
+			t.Errorf("Expected checkout code to be %s, but get %s", test.expectedCheckoutCode, checkoutCode)
 		}
 
 		if balance != test.expectedCheckoutBalance {
 			t.Errorf("Expected checkout balance to be %.2f, but get %.2f", test.expectedCheckoutBalance, balance)
 		}
 	}
-
 }

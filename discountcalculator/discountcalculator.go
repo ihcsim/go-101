@@ -1,7 +1,7 @@
 package discountcalculator
 
 type discountCalculator struct {
-	strategy func(invoiceTotal float64, d *discount) (balance float64, checkoutCode int)
+	strategy func(invoiceTotal float64, d *discount) (balance float64, code checkoutCode)
 }
 
 func New() *discountCalculator {
@@ -37,7 +37,7 @@ func (calculator *discountCalculator) SpecialDiscount(customer *customer, coupon
 	return d
 }
 
-func (calculator *discountCalculator) Checkout(customer *customer, invoiceTotal float64) (balance float64, checkoutCode int) {
+func (calculator *discountCalculator) Checkout(customer *customer, invoiceTotal float64) (balance float64, code checkoutCode) {
 	discount := calculator.Discount(customer)
 
 	switch c := customer.category; c {
@@ -54,7 +54,7 @@ func (calculator *discountCalculator) Checkout(customer *customer, invoiceTotal 
 	return calculator.strategy(invoiceTotal, discount)
 }
 
-func (calculator *discountCalculator) CheckoutWithSpecialDiscount(customer *customer, couponType int, invoiceTotal float64) (balance float64, checkoutCode int) {
+func (calculator *discountCalculator) CheckoutWithSpecialDiscount(customer *customer, couponType int, invoiceTotal float64) (balance float64, code checkoutCode) {
 	discount := calculator.SpecialDiscount(customer, couponType)
 
 	switch c := customer.category; c {
