@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -31,26 +32,26 @@ func main() {
 		showUsageAndExit(1)
 	}
 
-	stringOfDigits := os.Args[len(os.Args)-1]
-	for row := range bigDigits[0] {
+	input := os.Args[len(os.Args)-1]
+	for row := 0; row < DIGIT_HEIGHT; row++ {
 		line := ""
-		for column := range stringOfDigits {
-			digit := stringOfDigits[column] - '0'
-			if 0 <= digit && digit <= 9 {
-				line += bigDigits[digit][row] + "  "
+		for _, char := range input {
+			if digit, valid := toDigit(char); valid {
+				line += toBigDigit(digit, row)
 			} else {
 				log.Fatal("invalid whole number")
 			}
 		}
-		fmt.Println(line)
+		print(line, row)
 	}
 }
 
-var showUsage bool
+var showUsage, showBars bool
 
 func readFlags() {
 	flag.BoolVar(&showUsage, "help", false, "Show usages")
 	flag.BoolVar(&showUsage, "h", false, "Show usages (shorthand)")
+	flag.BoolVar(&showBars, "bar", false, "Display header and footer bars in output")
 	flag.Parse()
 }
 
@@ -63,31 +64,39 @@ func showUsageAndExit(exitStatus int) {
 	os.Exit(exitStatus)
 }
 
-var bigDigits = [][]string{
-	{"  000  ",
-		" 0   0 ",
-		"0     0",
-		"0     0",
-		"0     0",
-		" 0   0 ",
-		"  000  "},
-	{" 1 ",
-		"11 ",
-		" 1 ",
-		" 1 ",
-		" 1 ",
-		" 1 ",
-		"111"},
-	{" 222 ",
-		"2   2",
-		"   2 ",
-		"  2  ",
-		" 2   ",
-		"2    ",
-		"22222"},
+func toDigit(char rune) (rune, bool) {
+	digit := char - '0'
+	if 0 <= digit && digit <= 9 {
+		return digit, true
+	}
+	return 0, false
+}
+
+func toBigDigit(digit rune, row int) string {
+	return bigDigits[digit][row] + "  "
+}
+
+func print(line string, row int) {
+	if row == 0 && showBars {
+		fmt.Println(strings.Repeat("*", len(line)))
+	}
+
+	fmt.Println(line)
+
+	if row == DIGIT_HEIGHT-1 && showBars {
+		fmt.Println(strings.Repeat("*", len(line)))
+	}
+}
+
+// magnified output of each digit
+const DIGIT_HEIGHT = 7
+
+var bigDigits = [][DIGIT_HEIGHT]string{
+	{"  000  ", " 0   0 ", "0     0", "0     0", "0     0", " 0   0 ", "  000  "},
+	{" 1 ", "11 ", " 1 ", " 1 ", " 1 ", " 1 ", "111"},
+	{" 222 ", "2   2", "   2 ", "  2  ", " 2   ", "2    ", "22222"},
 	{" 333 ", "3   3", "    3", "  33 ", "    3", "3   3", " 333 "},
-	{"   4  ", "  44  ", " 4 4  ", "4  4  ", "444444", "   4  ",
-		"   4  "},
+	{"   4  ", "  44  ", " 4 4  ", "4  4  ", "444444", "   4  ", "   4  "},
 	{"55555", "5    ", "5    ", " 555 ", "    5", "5   5", " 555 "},
 	{" 666 ", "6    ", "6    ", "6666 ", "6   6", "6   6", " 666 "},
 	{"77777", "    7", "   7 ", "  7  ", " 7   ", "7    ", "7    "},

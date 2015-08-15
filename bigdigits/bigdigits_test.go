@@ -30,13 +30,14 @@ func TestBigDigits(t *testing.T) {
 		t.Fatalf("Failed to execute command %s: %s\n", actual, err)
 	}
 
-	expected, err := expectedOutput()
+	path, _ := os.Getwd()
+	expected, err := readExpectedOutput(filepath.Join(path, "0123456789.txt"))
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	if bytes.Compare(actual, expected) != 0 {
-		t.Errorf("Expected output didn't match.\nExpected:\n%s\nGot:\n%s", expected, string(actual))
+		t.Errorf("Expected output didn't match.\nExpected:\n%s\nGot:\n%s", expected, actual)
 	}
 }
 
@@ -66,6 +67,24 @@ func TestHelp_WithShortHand(t *testing.T) {
 	}
 }
 
+func TestBar(t *testing.T) {
+	cmd := setCmd("-bar")
+	actual, err := execCmd(cmd)
+	if err != nil {
+		t.Fatalf("Failed to execute command: (%s)\n%s", err, actual)
+	}
+
+	path, _ := os.Getwd()
+	expected, err := readExpectedOutput(filepath.Join(path, "0123456789_WithBars.txt"))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if bytes.Compare(actual, expected) != 0 {
+		t.Errorf("Expected output didn't match.\nExpected:\n%s\nGot:\n%s", expected, actual)
+	}
+}
+
 func setCmd(args ...string) *exec.Cmd {
 	executable := filepath.Join(os.Getenv("GOPATH"), "bin/bigdigits")
 	input := "0123456789"
@@ -91,7 +110,6 @@ func execCmd(command *exec.Cmd) ([]byte, error) {
 	return ioutil.ReadAll(reader)
 }
 
-func expectedOutput() ([]byte, error) {
-	path, _ := os.Getwd()
-	return ioutil.ReadFile(filepath.Join(path, "0123456789.txt"))
+func readExpectedOutput(filepath string) ([]byte, error) {
+	return ioutil.ReadFile(filepath)
 }
