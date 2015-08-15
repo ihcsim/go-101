@@ -24,11 +24,7 @@ import (
 )
 
 func TestBigDigits(t *testing.T) {
-	command, err := setCmd()
-	if err != nil {
-		t.Fatal(err)
-	}
-
+	command := setCmd()
 	actual, err := execCmd(command)
 	if err != nil {
 		t.Fatalf("Failed to execute command %s: %s\n", actual, err)
@@ -45,11 +41,7 @@ func TestBigDigits(t *testing.T) {
 }
 
 func TestHelp(t *testing.T) {
-	cmd, err := setCmd("-help")
-	if err != nil {
-		t.Fatalf("Failed to set up command %s: %s\n", strings.Join(cmd.Args, " "), err)
-	}
-
+	cmd := setCmd("-help")
 	actual, err := execCmd(cmd)
 	if err != nil {
 		t.Fatalf("Failed to execute command: (%s)\n%s", err, actual)
@@ -61,11 +53,11 @@ func TestHelp(t *testing.T) {
 	}
 }
 
-func setCmd(args ...string) (*exec.Cmd, error) {
+func setCmd(args ...string) *exec.Cmd {
 	executable := filepath.Join(os.Getenv("GOPATH"), "bin/bigdigits")
 	input := "0123456789"
 	command := exec.Command(executable, strings.Join(args, " "), input)
-	return command, nil
+	return command
 }
 
 func execCmd(command *exec.Cmd) ([]byte, error) {
