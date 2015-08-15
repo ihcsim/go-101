@@ -42,3 +42,4 @@ Package | Description
 ------- | -----------
 `stack` | A stack data structure demonstrating the usage of `interface{}`.
 `discountcalculator` | A discount calculator demonstrating the usage of function values and closures.
+`bigdigits` | A program that takes a numeric input and magnifies the number to stdout. Run `$GOPATH/bin/bigdigits --help` for usages.
