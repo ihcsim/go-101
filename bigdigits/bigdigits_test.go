@@ -85,6 +85,24 @@ func TestBar(t *testing.T) {
 	}
 }
 
+func TestBar_WithShortHand(t *testing.T) {
+	cmd := setCmd("-b")
+	actual, err := execCmd(cmd)
+	if err != nil {
+		t.Fatalf("Failed to execute command: (%s)\n%s", err, actual)
+	}
+
+	path, _ := os.Getwd()
+	expected, err := readExpectedOutput(filepath.Join(path, "0123456789_WithBars.txt"))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if bytes.Compare(actual, expected) != 0 {
+		t.Errorf("Expected output didn't match.\nExpected:\n%s\nGot:\n%s", expected, actual)
+	}
+}
+
 func setCmd(args ...string) *exec.Cmd {
 	executable := filepath.Join(os.Getenv("GOPATH"), "bin/bigdigits")
 	input := "0123456789"

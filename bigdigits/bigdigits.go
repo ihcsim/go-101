@@ -52,6 +52,7 @@ func readFlags() {
 	flag.BoolVar(&showUsage, "help", false, "Show usages")
 	flag.BoolVar(&showUsage, "h", false, "Show usages (shorthand)")
 	flag.BoolVar(&showBars, "bar", false, "Display header and footer bars in output")
+	flag.BoolVar(&showBars, "b", false, "Display header and footer bars in output (shorthand)")
 	flag.Parse()
 }
 
