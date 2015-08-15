@@ -21,7 +21,7 @@ import (
 )
 
 func main() {
-	showUsage := ReadFlags()
+	readFlags()
 
 	if showUsage {
 		showUsageAndExit(0)
@@ -46,10 +46,12 @@ func main() {
 	}
 }
 
-func ReadFlags() bool {
-	showUsage := flag.Bool("help", false, "Show usages")
+var showUsage bool
+
+func readFlags() {
+	flag.BoolVar(&showUsage, "help", false, "Show usages")
+	flag.BoolVar(&showUsage, "h", false, "Show usages (shorthand)")
 	flag.Parse()
-	return *showUsage
 }
 
 func insufficientArgs() bool {

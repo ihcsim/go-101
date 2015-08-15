@@ -53,6 +53,19 @@ func TestHelp(t *testing.T) {
 	}
 }
 
+func TestHelp_WithShortHand(t *testing.T) {
+	cmd := setCmd("-h")
+	actual, err := execCmd(cmd)
+	if err != nil {
+		t.Fatalf("Failed to execute command: (%s)\n%s", err, actual)
+	}
+
+	expected := "usage: bigdigits [-b | --bar] <whole-number>\n\n-b --bar draw an underbar and an overbar\n"
+	if string(actual) != expected {
+		t.Errorf("Expected usage message didn't match.\nExpected:\n%s\nGot:\n%s", expected, string(actual))
+	}
+}
+
 func setCmd(args ...string) *exec.Cmd {
 	executable := filepath.Join(os.Getenv("GOPATH"), "bin/bigdigits")
 	input := "0123456789"
