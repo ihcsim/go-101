@@ -14,21 +14,24 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"os"
 )
 
 func main() {
+	showUsage := ReadFlags()
+
+	if showUsage {
+		showUsageAndExit(0)
+	}
+
 	if insufficientArgs() {
 		showUsageAndExit(1)
 	}
 
-	if showUsage() {
-		showUsageAndExit(0)
-	}
-
-	stringOfDigits := os.Args[1]
+	stringOfDigits := os.Args[len(os.Args)-1]
 	for row := range bigDigits[0] {
 		line := ""
 		for column := range stringOfDigits {
@@ -43,12 +46,14 @@ func main() {
 	}
 }
 
-func insufficientArgs() bool {
-	return len(os.Args) <= 1
+func ReadFlags() bool {
+	showUsage := flag.Bool("help", false, "Show usages")
+	flag.Parse()
+	return *showUsage
 }
 
-func showUsage() bool {
-	return len(os.Args) == 3 && os.Args[2] == "--help"
+func insufficientArgs() bool {
+	return len(os.Args) <= 1
 }
 
 func showUsageAndExit(exitStatus int) {

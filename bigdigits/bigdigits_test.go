@@ -31,7 +31,7 @@ func TestBigDigits(t *testing.T) {
 
 	actual, err := execCmd(command)
 	if err != nil {
-		t.Fatal(err)
+		t.Fatalf("Failed to execute command %s: %s\n", actual, err)
 	}
 
 	expected, err := expectedOutput()
@@ -45,14 +45,14 @@ func TestBigDigits(t *testing.T) {
 }
 
 func TestHelp(t *testing.T) {
-	cmd, err := setCmd("--help")
+	cmd, err := setCmd("-help")
 	if err != nil {
-		t.Fatalf("Failed to set up command: %s\n", err)
+		t.Fatalf("Failed to set up command %s: %s\n", strings.Join(cmd.Args, " "), err)
 	}
 
 	actual, err := execCmd(cmd)
 	if err != nil {
-		t.Fatalf("Failed to execute command: %s\n", err)
+		t.Fatalf("Failed to execute command: (%s)\n%s", err, actual)
 	}
 
 	expected := "usage: bigdigits [-b | --bar] <whole-number>\n\n-b --bar draw an underbar and an overbar\n"
@@ -64,7 +64,7 @@ func TestHelp(t *testing.T) {
 func setCmd(args ...string) (*exec.Cmd, error) {
 	executable := filepath.Join(os.Getenv("GOPATH"), "bin/bigdigits")
 	input := "0123456789"
-	command := exec.Command(executable, input, strings.Join(args, " "))
+	command := exec.Command(executable, strings.Join(args, " "), input)
 	return command, nil
 }
 
@@ -73,9 +73,13 @@ func execCmd(command *exec.Cmd) ([]byte, error) {
 	defer reader.Close()
 
 	command.Stdout = writer
+
+	var stderr bytes.Buffer
+	command.Stderr = &stderr
+
 	err := command.Run()
 	if err != nil {
-		return []byte{}, err
+		return stderr.Bytes(), err
 	}
 
 	writer.Close()
