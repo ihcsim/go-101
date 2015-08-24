@@ -5,7 +5,8 @@ import "testing"
 var stats *statistics
 
 func setUp() {
-	stats = NewStatistics()
+	precision := 4
+	stats = NewStatistics(precision)
 }
 
 func TestComputeSum_GivenFloatIntegers_ReturnSum(t *testing.T) {
@@ -110,6 +111,33 @@ func TestComputeMedian_GivenEvenCounts_ReturnAverageOfMiddleValues(t *testing.T)
 		stats.numbers = test.inputs
 		if median := stats.computeMedian(); test.expected != median {
 			t.Errorf("Expected median to be %f, but got %f", test.expected, median)
+		}
+	}
+}
+
+func TestComputeStandardDeviation_ReturnStandardDeviation(t *testing.T) {
+	setUp()
+
+	var tests = []struct {
+		inputs   []float64
+		expected float64
+	}{
+		{inputs: []float64{1.00, 2.00, 3.00, 4.00, 5.00, 6.00},
+			expected: 1.8708},
+		{inputs: []float64{-1.00, -2.00, -3.00, -4.00, -5.00, -6.00},
+			expected: 1.8708},
+		{inputs: []float64{11.00, 12.00, 13.00, 14.00, 15.00, 16.00, 17.00},
+			expected: 2.1602},
+		{inputs: []float64{16.00, 17.00, 18.00, 19.00, 20.00, 21.00, 22.00, 23.00},
+			expected: 2.4494},
+		{inputs: []float64{21.00, 22.00, 23.00, 24.00, 25.00},
+			expected: 1.5811},
+	}
+
+	for _, test := range tests {
+		stats.numbers = test.inputs
+		if standardDeviation := stats.computeStandardDeviation(); test.expected != standardDeviation {
+			t.Errorf("Expected standard deviation to be %f, but got %f", test.expected, standardDeviation)
 		}
 	}
 }

@@ -1,16 +1,23 @@
 package main
 
-import "sort"
+import (
+	"math"
+	"sort"
+)
 
 type statistics struct {
-	numbers []float64
-	sum     float64
-	mean    float64
-	median  float64
+	numbers           []float64
+	sum               float64
+	mean              float64
+	median            float64
+	standardDeviation float64
+	precision         int
 }
 
-func NewStatistics() *statistics {
-	return &statistics{}
+func NewStatistics(precision int) *statistics {
+	return &statistics{
+		precision: precision,
+	}
 }
 
 func (s *statistics) Compute(inputs []float64) {
@@ -18,6 +25,7 @@ func (s *statistics) Compute(inputs []float64) {
 	sort.Float64s(s.numbers)
 	s.mean = s.computeMean()
 	s.median = s.computeMedian()
+	s.standardDeviation = s.computeStandardDeviation()
 }
 
 func (s *statistics) computeMean() (total float64) {
@@ -38,4 +46,20 @@ func (s *statistics) computeMedian() float64 {
 		result = (result + s.numbers[middle-1]) / 2
 	}
 	return result
+}
+
+func (s *statistics) computeStandardDeviation() float64 {
+	mean := s.computeMean()
+	var sum float64
+	for _, number := range s.numbers {
+		sum += math.Pow(number-mean, 2)
+	}
+
+	result := math.Sqrt(sum / float64((len(s.numbers) - 1)))
+	return s.roundToPrecision(result)
+}
+
+func (s *statistics) roundToPrecision(input float64) float64 {
+	multiplier := math.Pow(10, float64(s.precision))
+	return (float64(int(input * multiplier))) / multiplier
 }
