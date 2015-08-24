@@ -17,15 +17,15 @@ func TestComputeSum_GivenFloatIntegers_ReturnSum(t *testing.T) {
 		expected float64
 	}{
 		{inputs: []float64{1.00, 2.00, 3.00, 4.00, 5.00},
-			expected: 1.00 + 2.00 + 3.00 + 4.00 + 5.00},
+			expected: 15.00},
 		{inputs: []float64{-1.00, -2.00, -3.00, -4.00, -5.00},
-			expected: -1.00 + -2.00 + -3.00 + -4.00 + -5.00},
+			expected: -15.00},
 		{inputs: []float64{11.00, 12.00, 13.00, 14.00, 15.00},
-			expected: 11.00 + 12.00 + 13.00 + 14.00 + 15.00},
+			expected: 65.00},
 		{inputs: []float64{16.00, 17.00, 18.00, 19.00, 20.00},
-			expected: 16.00 + 17.00 + 18.00 + 19.00 + 20.00},
+			expected: 90.00},
 		{inputs: []float64{21.00, 22.00, 23.00, 24.00, 25.00},
-			expected: 21.00 + 22.00 + 23.00 + 24.00 + 25.00},
+			expected: 115.00},
 	}
 	for _, test := range tests {
 		stats.numbers = test.inputs
@@ -141,3 +141,6 @@ func TestComputeStandardDeviation_ReturnStandardDeviation(t *testing.T) {
 		}
 	}
 }
+
+func TestComputeMean_GivenEmptyInputsArray(t *testing.T)              {}
+func TestComputeStandardDeviation_GivenEmptyInputsArray(t *testing.T) {}

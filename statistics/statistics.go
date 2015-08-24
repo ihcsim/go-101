@@ -29,23 +29,24 @@ func (s *statistics) Compute(inputs []float64) {
 }
 
 func (s *statistics) computeMean() (total float64) {
-	return s.computeSum() / float64(len(s.numbers))
+	mean := s.computeSum() / float64(len(s.numbers))
+	return s.roundToPrecision(mean)
 }
 
 func (s *statistics) computeSum() (total float64) {
 	for _, x := range s.numbers {
 		total += x
 	}
-	return total
+	return s.roundToPrecision(total)
 }
 
 func (s *statistics) computeMedian() float64 {
 	middle := len(s.numbers) / 2
-	result := s.numbers[middle]
+	median := s.numbers[middle]
 	if len(s.numbers)%2 == 0 {
-		result = (result + s.numbers[middle-1]) / 2
+		median = (median + s.numbers[middle-1]) / 2
 	}
-	return result
+	return s.roundToPrecision(median)
 }
 
 func (s *statistics) computeStandardDeviation() float64 {
