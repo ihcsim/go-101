@@ -20,12 +20,12 @@ func TestComputeSum_GivenFloatIntegers_ReturnSum(t *testing.T) {
 			expected: 15.00},
 		{inputs: []float64{-1.00, -2.00, -3.00, -4.00, -5.00},
 			expected: -15.00},
-		{inputs: []float64{11.00, 12.00, 13.00, 14.00, 15.00},
-			expected: 65.00},
-		{inputs: []float64{16.00, 17.00, 18.00, 19.00, 20.00},
-			expected: 90.00},
-		{inputs: []float64{21.00, 22.00, 23.00, 24.00, 25.00},
-			expected: 115.00},
+		{inputs: []float64{11.10, 12.23, 13.56, 14.88, 15.02},
+			expected: 66.79},
+		{inputs: []float64{16.30, 17.12, 18.95, 19.44, 20.77},
+			expected: 92.58},
+		{inputs: []float64{21.44, 22.22, 23.56, 24.43, 25.11},
+			expected: 116.76},
 	}
 	for _, test := range tests {
 		stats.numbers = test.inputs
@@ -46,12 +46,12 @@ func TestComputeMean_GivenFloatIntegers_ReturnSum(t *testing.T) {
 			expected: 3.00},
 		{inputs: []float64{-1.00, -2.00, -3.00, -4.00, -5.00},
 			expected: -3.00},
-		{inputs: []float64{11.00, 12.00, 13.00, 14.00, 15.00},
-			expected: 13.00},
-		{inputs: []float64{16.00, 17.00, 18.00, 19.00, 20.00},
-			expected: 18.00},
-		{inputs: []float64{21.00, 22.00, 23.00, 24.00, 25.00},
-			expected: 23.00},
+		{inputs: []float64{11.10, 12.23, 13.56, 14.88, 15.02},
+			expected: 13.3580},
+		{inputs: []float64{16.30, 17.12, 18.95, 19.44, 20.77},
+			expected: 18.5159},
+		{inputs: []float64{21.44, 22.22, 23.56, 24.43, 25.11},
+			expected: 23.3520},
 	}
 	for _, test := range tests {
 		stats.numbers = test.inputs
