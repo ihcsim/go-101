@@ -24,7 +24,7 @@ func NewStatistics(precision int) *statistics {
 
 func (s *statistics) Compute(inputs []float64) {
 	s.numbers = inputs
-	if s.validInputs() {
+	if !s.validInputs() {
 		s.err = errors.New("Can't compute mean of empty inputs.")
 		return
 	}
@@ -36,7 +36,7 @@ func (s *statistics) Compute(inputs []float64) {
 }
 
 func (s *statistics) computeMean() (mean float64, err error) {
-	if s.validInputs() {
+	if !s.validInputs() {
 		return mean, errors.New("Can't compute mean of empty inputs.")
 	}
 
@@ -51,7 +51,7 @@ func (s *statistics) computeMean() (mean float64, err error) {
 }
 
 func (s *statistics) computeSum() (sum float64, err error) {
-	if s.validInputs() {
+	if !s.validInputs() {
 		return sum, errors.New("Can't compute mean of empty inputs.")
 	}
 
@@ -62,7 +62,7 @@ func (s *statistics) computeSum() (sum float64, err error) {
 }
 
 func (s *statistics) computeMedian() (median float64, err error) {
-	if s.validInputs() {
+	if !s.validInputs() {
 		return median, errors.New("Can't compute mean of empty inputs.")
 	}
 
@@ -75,7 +75,7 @@ func (s *statistics) computeMedian() (median float64, err error) {
 }
 
 func (s *statistics) computeStandardDeviation() (sd float64, err error) {
-	if s.validInputs() {
+	if !s.validInputs() {
 		return sd, errors.New("Can't compute mean of empty inputs.")
 	}
 
@@ -94,7 +94,7 @@ func (s *statistics) computeStandardDeviation() (sd float64, err error) {
 }
 
 func (s *statistics) validInputs() bool {
-	return len(s.numbers) == 0
+	return len(s.numbers) > 0
 }
 
 func (s *statistics) roundToPrecision(input float64) float64 {
