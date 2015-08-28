@@ -13,6 +13,7 @@ type statistics struct {
 	median            float64
 	standardDeviation float64
 	precision         int
+	err               error
 }
 
 func NewStatistics(precision int) *statistics {
@@ -23,6 +24,11 @@ func NewStatistics(precision int) *statistics {
 
 func (s *statistics) Compute(inputs []float64) {
 	s.numbers = inputs
+	if s.validInputs() {
+		s.err = errors.New("Can't compute mean of empty inputs.")
+		return
+	}
+
 	sort.Float64s(s.numbers)
 	s.mean, _ = s.computeMean()
 	s.median, _ = s.computeMedian()
@@ -32,15 +38,15 @@ func (s *statistics) Compute(inputs []float64) {
 func (s *statistics) computeMean() (mean float64, err error) {
 	if s.validInputs() {
 		return mean, errors.New("Can't compute mean of empty inputs.")
-
 	}
 
-	sum, sumErr := s.computeSum()
+	var sumErr error
+	s.sum, sumErr = s.computeSum()
 	if sumErr != nil {
 		return mean, sumErr
 	}
 
-	mean = sum / float64(len(s.numbers))
+	mean = s.sum / float64(len(s.numbers))
 	return s.roundToPrecision(mean), nil
 }
 

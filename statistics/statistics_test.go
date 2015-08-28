@@ -9,6 +9,58 @@ func setUp() {
 	stats = NewStatistics(precision)
 }
 
+func TestCompute_GivenEmptyInputsArray_ReturnAnError(t *testing.T) {
+	setUp()
+
+	inputs := []float64{}
+	stats.Compute(inputs)
+	if stats.err == nil {
+		t.Errorf("Expected error didn't occur")
+	}
+}
+
+func TestCompute_GivenFloatIntegers_CorrectlyComputeAllStats(t *testing.T) {
+	setUp()
+
+	var tests = []struct {
+		inputs                    []float64
+		expectedMean              float64
+		expectedMedian            float64
+		expectedSum               float64
+		expectedStandardDeviation float64
+	}{
+		{inputs: []float64{1.00, 2.00, 3.00, 4.00, 5.00},
+			expectedMean:              3.00,
+			expectedMedian:            3.00,
+			expectedStandardDeviation: 1.5811,
+			expectedSum:               15.00},
+	}
+
+	for _, test := range tests {
+		stats.Compute(test.inputs)
+
+		if stats.err != nil {
+			t.Errorf("Expected no errors to occur")
+		}
+
+		if stats.mean != test.expectedMean {
+			t.Errorf("Expected mean to be %f, but got %f", test.expectedMean, stats.mean)
+		}
+
+		if stats.median != test.expectedMedian {
+			t.Errorf("Expected median to be %f, but got %f", test.expectedMedian, stats.median)
+		}
+
+		if stats.sum != test.expectedSum {
+			t.Errorf("Expected sum to be %f, but got %f", test.expectedSum, stats.sum)
+		}
+
+		if stats.standardDeviation != test.expectedStandardDeviation {
+			t.Errorf("Expected stnadard deviation to be %f, but got %f", test.expectedStandardDeviation, stats.standardDeviation)
+		}
+	}
+}
+
 func TestComputeSum_GivenFloatIntegers_ReturnSum(t *testing.T) {
 	setUp()
 
