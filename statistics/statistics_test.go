@@ -29,7 +29,7 @@ func TestComputeSum_GivenFloatIntegers_ReturnSum(t *testing.T) {
 	}
 	for _, test := range tests {
 		stats.numbers = test.inputs
-		if actual := stats.computeSum(); test.expected != actual {
+		if actual, _ := stats.computeSum(); test.expected != actual {
 			t.Errorf("Expected sum to be %f, but get %f", test.expected, actual)
 		}
 	}
@@ -55,7 +55,7 @@ func TestComputeMean_GivenFloatIntegers_ReturnSum(t *testing.T) {
 	}
 	for _, test := range tests {
 		stats.numbers = test.inputs
-		if actual := stats.computeMean(); test.expected != actual {
+		if actual, _ := stats.computeMean(); test.expected != actual {
 			t.Errorf("Expected mean to be %f, but get %f", test.expected, actual)
 		}
 	}
@@ -82,7 +82,7 @@ func TestComputeMedian_GivenOddCounts_ReturnMiddleValue(t *testing.T) {
 
 	for _, test := range tests {
 		stats.numbers = test.inputs
-		if median := stats.computeMedian(); test.expected != median {
+		if median, _ := stats.computeMedian(); test.expected != median {
 			t.Errorf("Expected median to be %f, but got %f", test.expected, median)
 		}
 	}
@@ -109,7 +109,7 @@ func TestComputeMedian_GivenEvenCounts_ReturnAverageOfMiddleValues(t *testing.T)
 
 	for _, test := range tests {
 		stats.numbers = test.inputs
-		if median := stats.computeMedian(); test.expected != median {
+		if median, _ := stats.computeMedian(); test.expected != median {
 			t.Errorf("Expected median to be %f, but got %f", test.expected, median)
 		}
 	}
@@ -136,11 +136,48 @@ func TestComputeStandardDeviation_ReturnStandardDeviation(t *testing.T) {
 
 	for _, test := range tests {
 		stats.numbers = test.inputs
-		if standardDeviation := stats.computeStandardDeviation(); test.expected != standardDeviation {
+		if standardDeviation, _ := stats.computeStandardDeviation(); test.expected != standardDeviation {
 			t.Errorf("Expected standard deviation to be %f, but got %f", test.expected, standardDeviation)
 		}
 	}
 }
 
-func TestComputeMean_GivenEmptyInputsArray(t *testing.T)              {}
-func TestComputeStandardDeviation_GivenEmptyInputsArray(t *testing.T) {}
+func TestComputeMean_GivenEmptyInputsArray_ReturnAnError(t *testing.T) {
+	setUp()
+
+	stats.numbers = []float64{}
+	_, err := stats.computeMean()
+	if err == nil {
+		t.Errorf("Expected error to have occurred")
+	}
+}
+
+func TestComputeSum_GivenEmptyInputsArray_ReturnAnError(t *testing.T) {
+	setUp()
+
+	stats.numbers = []float64{}
+	_, err := stats.computeSum()
+	if err == nil {
+		t.Errorf("Expected error to have occurred")
+	}
+}
+
+func TestComputeMedian_GivenEmptyInputsArray_ReturnAnError(t *testing.T) {
+	setUp()
+
+	stats.numbers = []float64{}
+	_, err := stats.computeMedian()
+	if err == nil {
+		t.Errorf("Expected error to have occurred")
+	}
+}
+
+func TestComputeStandardDeviation_GivenEmptyInputsArray_ReturnAnError(t *testing.T) {
+	setUp()
+
+	stats.numbers = []float64{}
+	_, err := stats.computeStandardDeviation()
+	if err == nil {
+		t.Errorf("Expected error to have occurred")
+	}
+}
