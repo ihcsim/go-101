@@ -64,6 +64,7 @@ func formatStats(stats *statistics) string {
 <tr><td>Count</td><td>%d</td></tr>
 <tr><td>Mean</td><td>%f</td></tr>
 <tr><td>Median</td><td>%f</td></tr>
+<tr><td>Modes</td><td>%v</td></tr>
 <tr><td>Standard Deviation</td><td>%f</td></tr>
-</table>`, stats.numbers, len(stats.numbers), stats.mean, stats.median, stats.standardDeviation)
+</table>`, stats.numbers, len(stats.numbers), stats.mean, stats.median, stats.modes, stats.standardDeviation)
 }
