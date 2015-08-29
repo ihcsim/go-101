@@ -28,12 +28,14 @@ func TestCompute_GivenFloatIntegers_CorrectlyComputeAllStats(t *testing.T) {
 		expectedMedian            float64
 		expectedSum               float64
 		expectedStandardDeviation float64
+		expectedModes             []float64
 	}{
-		{inputs: []float64{1.00, 2.00, 3.00, 4.00, 5.00},
+		{inputs: []float64{1.00, 2.00, 3.00, 3.00, 4.00, 5.00},
 			expectedMean:              3.00,
 			expectedMedian:            3.00,
-			expectedStandardDeviation: 1.5811,
-			expectedSum:               15.00},
+			expectedStandardDeviation: 1.4142,
+			expectedSum:               18.00,
+			expectedModes:             []float64{3.00}},
 	}
 
 	for _, test := range tests {
@@ -254,7 +256,7 @@ func TestComputeMode_GivenInputsWithOneMode_ReturnCorrectMode(t *testing.T) {
 	for _, test := range tests {
 		stats.numbers = test.inputs
 		// expecting only one mode
-		if actuals, _ := stats.computeMode(); actuals[0] != test.expected {
+		if actuals, _ := stats.computeModes(); actuals[0] != test.expected {
 			t.Errorf("Expected mode to be %f, but got %f", test.expected, actuals[0])
 		}
 	}
@@ -279,7 +281,7 @@ func TestComputeMode_GivenInputsWithMultipleModes_ReturnAllModes(t *testing.T) {
 
 	for _, test := range tests {
 		stats.numbers = test.inputs
-		actuals, _ := stats.computeMode()
+		actuals, _ := stats.computeModes()
 		for _, expected := range test.expected {
 			ok := false
 			for _, actual := range actuals {

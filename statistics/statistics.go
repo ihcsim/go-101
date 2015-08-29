@@ -12,6 +12,7 @@ type statistics struct {
 	mean              float64
 	median            float64
 	standardDeviation float64
+	modes             []float64
 	precision         int
 	err               error
 }
@@ -33,6 +34,7 @@ func (s *statistics) Compute(inputs []float64) {
 	s.mean, _ = s.computeMean()
 	s.median, _ = s.computeMedian()
 	s.standardDeviation, _ = s.computeStandardDeviation()
+	s.modes, _ = s.computeModes()
 }
 
 func (s *statistics) computeMean() (mean float64, err error) {
@@ -93,7 +95,7 @@ func (s *statistics) computeStandardDeviation() (sd float64, err error) {
 	return s.roundToPrecision(result), nil
 }
 
-func (s *statistics) computeMode() (modes []float64, err error) {
+func (s *statistics) computeModes() (modes []float64, err error) {
 	maxOccurrence := math.MinInt64
 	occurrences := make(map[float64]int)
 	for _, input := range s.numbers {
