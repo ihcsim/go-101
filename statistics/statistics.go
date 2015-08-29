@@ -93,6 +93,30 @@ func (s *statistics) computeStandardDeviation() (sd float64, err error) {
 	return s.roundToPrecision(result), nil
 }
 
+func (s *statistics) computeMode() (modes []float64, err error) {
+	maxOccurrence := math.MinInt64
+	occurrences := make(map[float64]int)
+	for _, input := range s.numbers {
+		if _, ok := occurrences[input]; ok {
+			occurrences[input] += 1
+		} else {
+			occurrences[input] = 1
+		}
+
+		if occurrences[input] > maxOccurrence {
+			maxOccurrence = occurrences[input]
+		}
+	}
+
+	for input, occurrence := range occurrences {
+		if occurrence == maxOccurrence {
+			modes = append(modes, input)
+		}
+	}
+
+	return
+}
+
 func (s *statistics) validInputs() bool {
 	return len(s.numbers) > 0
 }

@@ -233,3 +233,64 @@ func TestComputeStandardDeviation_GivenEmptyInputsArray_ReturnAnError(t *testing
 		t.Errorf("Expected error to have occurred")
 	}
 }
+
+func TestComputeMode_GivenInputsWithOneMode_ReturnCorrectMode(t *testing.T) {
+	setUp()
+
+	var tests = []struct {
+		inputs   []float64
+		expected float64
+	}{
+		{inputs: []float64{1.0, 2.0, 3.0, 4.0, 5.0, 5.0, 6.0, 6.0, 6.0, 7.0, 7.0, 8.0, 9.0, 10.0, 10.0},
+			expected: 6.0},
+		{inputs: []float64{-1.0, -2.0, -2.0, -2.0, -2.0, -3.0, -4.0, -5.0, -6.0, -7.0, -8.0, -8.0, -9.0, -10.0},
+			expected: -2.0},
+		{inputs: []float64{10.00, 20.00, 30.00, 30.00, 40.00, 40.00, 40.00, 40.00, 50.00, 60.00, 70.00, 70.00},
+			expected: 40.00},
+		{inputs: []float64{100.00, 100.00, 100.00, 200.00, 300.00, 400.00, 400.00, 500.00, 500.00},
+			expected: 100.0},
+	}
+
+	for _, test := range tests {
+		stats.numbers = test.inputs
+		// expecting only one mode
+		if actuals, _ := stats.computeMode(); actuals[0] != test.expected {
+			t.Errorf("Expected mode to be %f, but got %f", test.expected, actuals[0])
+		}
+	}
+}
+
+func TestComputeMode_GivenInputsWithMultipleModes_ReturnAllModes(t *testing.T) {
+	setUp()
+
+	var tests = []struct {
+		inputs   []float64
+		expected []float64
+	}{
+		{inputs: []float64{1.0, 2.0, 3.0, 4.0, 5.0, 5.0, 6.0, 6.0, 6.0, 7.0, 7.0, 7.0, 8.0, 9.0, 10.0, 10.0},
+			expected: []float64{6.0, 7.0}},
+		{inputs: []float64{-1.0, -2.0, -3.0, -4.0, -5.0, -5.0, -6.0, -6.0, -6.0, -7.0, -7.0, -7.0, -8.0, -9.0, -10.0, -10.0},
+			expected: []float64{-7.0, -6.0}},
+		{inputs: []float64{10.0, 20.0, 30.0, 40.0, 50.0, 50.0, 60.0, 60.0, 70.0, 70.0, 70.0, 70.0, 80.0, 90.0, 100.0, 100.0},
+			expected: []float64{70.0}},
+		{inputs: []float64{100.0, 100.0, 200.0, 200.0, 300.0, 300.0, 400.0, 500.0, 500.0},
+			expected: []float64{100.0, 200.0, 300.0, 500.0}},
+	}
+
+	for _, test := range tests {
+		stats.numbers = test.inputs
+		actuals, _ := stats.computeMode()
+		for _, expected := range test.expected {
+			ok := false
+			for _, actual := range actuals {
+				if actual == expected {
+					ok = true
+				}
+			}
+
+			if !ok {
+				t.Errorf("Expected modes to include %f, but not found. Actual modes: %v", expected, actuals)
+			}
+		}
+	}
+}
