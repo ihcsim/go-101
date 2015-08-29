@@ -96,6 +96,10 @@ func (s *statistics) computeStandardDeviation() (sd float64, err error) {
 }
 
 func (s *statistics) computeModes() (modes []float64, err error) {
+	if !s.validInputs() {
+		return modes, errors.New("Can't compute mean of empty inputs.")
+	}
+
 	maxOccurrence := math.MinInt64
 	occurrences := make(map[float64]int)
 	for _, input := range s.numbers {

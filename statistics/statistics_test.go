@@ -236,6 +236,16 @@ func TestComputeStandardDeviation_GivenEmptyInputsArray_ReturnAnError(t *testing
 	}
 }
 
+func TestComputeModes_GivenEmptyInputsArray_ReturnAnError(t *testing.T) {
+	setUp()
+
+	stats.numbers = []float64{}
+	_, err := stats.computeModes()
+	if err == nil {
+		t.Errorf("Expected error to have occurred")
+	}
+}
+
 func TestComputeMode_GivenInputsWithOneMode_ReturnCorrectMode(t *testing.T) {
 	setUp()
 
