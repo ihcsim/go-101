@@ -34,9 +34,13 @@ func TestSolve_GivenRealCoefficients_ReturnsTheCorrectSolution(t *testing.T) {
 			precision},
 			expected: &solution{x1: -4.00, x2: -4.00}},
 		{input: &equation{
-			coefficients{quadratic: 2 + 0i, linear: 32.00, constant: 64.00},
+			coefficients{quadratic: 2.00, linear: 32.00, constant: 64.00},
 			precision},
 			expected: &solution{x1: -2.3431, x2: -13.6568}},
+		{input: &equation{
+			coefficients{quadratic: -3.00, linear: 10.00, constant: 20.00},
+			precision},
+			expected: &solution{x1: -1.4065, x2: 4.7398}},
 	}
 
 	for _, test := range tests {
