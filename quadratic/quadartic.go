@@ -1,6 +1,7 @@
 package quadratic
 
 import (
+	"errors"
 	"math"
 	"math/cmplx"
 )
@@ -28,6 +29,10 @@ type solution struct {
 // SolveEquation solves the quadratic equation made up of the given coefficients using
 // the quadratic formula.
 func SolveEquation(e *equation) (s *solution, err error) {
+	if e.quadratic == 0 {
+		return nil, errors.New("The quadratic coefficient cannot be 0.")
+	}
+
 	x1 := (-e.linear + discriminant(e.coefficients)) / divisor(e.coefficients)
 	x2 := (-e.linear - discriminant(e.coefficients)) / divisor(e.coefficients)
 

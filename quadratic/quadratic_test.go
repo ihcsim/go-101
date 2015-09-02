@@ -54,5 +54,19 @@ func TestSolveEquation_ReturnsTheCorrectSolution(t *testing.T) {
 	}
 }
 
-func TestSolveQuadraticEquation_WhenQuadraticCoefficentIsZero_ReturnsAnError(t *testing.T) {}
-func TestSolveQuadraticEquation_WhenDiscriminatIsNegative(t *testing.T)                    {}
+func TestSolveQuadraticEquation_WhenQuadraticCoefficentIsZero_ReturnsAnError(t *testing.T) {
+	precision := 4
+	input := &equation{
+		coefficients{
+			quadratic: 0,
+			linear:    2,
+			constant:  1,
+		},
+		precision,
+	}
+
+	_, err := SolveEquation(input)
+	if err == nil {
+		t.Errorf("Expected error didn't occur.")
+	}
+}
