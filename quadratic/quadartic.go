@@ -26,9 +26,9 @@ type solution struct {
 	x2 complex128
 }
 
-// SolveEquation solves the quadratic equation made up of the given coefficients using
+// Solve attempts to solve the quadratic equation made up of the given coefficients using
 // the quadratic formula.
-func SolveEquation(e *equation) (s *solution, err error) {
+func Solve(e *equation) (s *solution, err error) {
 	if e.quadratic == 0 {
 		return nil, errors.New("The quadratic coefficient cannot be 0.")
 	}

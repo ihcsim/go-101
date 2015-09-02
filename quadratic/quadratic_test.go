@@ -3,7 +3,7 @@ package quadratic
 import "testing"
 
 // Verified using calculator at http://www.math.com/students/calculators/source/quadratic.htm
-func TestSolveEquation_ReturnsTheCorrectSolution(t *testing.T) {
+func TestSolve_GivenRealCoefficients_ReturnsTheCorrectSolution(t *testing.T) {
 	precision := 4
 	var tests = []struct {
 		input    *equation
@@ -40,7 +40,7 @@ func TestSolveEquation_ReturnsTheCorrectSolution(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		actual, err := SolveEquation(test.input)
+		actual, err := Solve(test.input)
 		if err != nil {
 			t.Errorf("Unexpected error occurred", err)
 		}
@@ -54,7 +54,7 @@ func TestSolveEquation_ReturnsTheCorrectSolution(t *testing.T) {
 	}
 }
 
-func TestSolveQuadraticEquation_WhenQuadraticCoefficentIsZero_ReturnsAnError(t *testing.T) {
+func TestSolve_GivenZeroQuadraticCoefficent_ReturnsAnError(t *testing.T) {
 	precision := 4
 	input := &equation{
 		coefficients{
@@ -65,8 +65,10 @@ func TestSolveQuadraticEquation_WhenQuadraticCoefficentIsZero_ReturnsAnError(t *
 		precision,
 	}
 
-	_, err := SolveEquation(input)
+	_, err := Solve(input)
 	if err == nil {
 		t.Errorf("Expected error didn't occur.")
 	}
 }
+
+func TestSolve_WhenDiscriminatIsNegative_ReturnsTheCorrectSolution(t *testing.T) {}
