@@ -20,10 +20,23 @@ type equation struct {
 	precision int
 }
 
+func NewEquation(quadratic, linear, constant complex128, precision int) *equation {
+	return &equation{
+		coefficients{quadratic: quadratic, linear: linear, constant: constant},
+		precision}
+}
+
 // solution has fields that represents the answer to a quadratic equation
 type solution struct {
 	x1 complex128
 	x2 complex128
+}
+
+func NewSolution(x1, x2 complex128) *solution {
+	return &solution{
+		x1: x1,
+		x2: x2,
+	}
 }
 
 // Solve attempts to solve the quadratic equation made up of the given coefficients using

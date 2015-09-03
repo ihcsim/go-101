@@ -9,38 +9,22 @@ func TestSolve_GivenRealCoefficients_ReturnsTheCorrectSolution(t *testing.T) {
 		input    *equation
 		expected *solution
 	}{
-		{input: &equation{
-			coefficients{quadratic: 1.00, linear: -4.00, constant: 4.00},
-			precision},
-			expected: &solution{x1: 2.00, x2: 2.00}},
-		{input: &equation{
-			coefficients{quadratic: 1.00, linear: 10.00, constant: 25.00},
-			precision},
-			expected: &solution{x1: -5.00, x2: -5.00}},
-		{input: &equation{
-			coefficients{quadratic: 1.00, linear: 0.00, constant: -9.00},
-			precision},
-			expected: &solution{x1: 3.00, x2: -3.00}},
-		{input: &equation{
-			coefficients{quadratic: 1 + 0i, linear: 0.00, constant: -81.00},
-			precision},
-			expected: &solution{x1: 9.00, x2: -9.00}},
-		{input: &equation{
-			coefficients{quadratic: 2 + 0i, linear: 8.00, constant: 8.00},
-			precision},
-			expected: &solution{x1: -2.00, x2: -2.00}},
-		{input: &equation{
-			coefficients{quadratic: 2.00, linear: 16.00, constant: 32.00},
-			precision},
-			expected: &solution{x1: -4.00, x2: -4.00}},
-		{input: &equation{
-			coefficients{quadratic: 2.00, linear: 32.00, constant: 64.00},
-			precision},
-			expected: &solution{x1: -2.3431, x2: -13.6568}},
-		{input: &equation{
-			coefficients{quadratic: -3.00, linear: 10.00, constant: 20.00},
-			precision},
-			expected: &solution{x1: -1.4065, x2: 4.7398}},
+		{input: NewEquation(1.00, -4.00, 4.00, precision),
+			expected: NewSolution(2.00, 2.00)},
+		{input: NewEquation(1.00, 10.00, 25.00, precision),
+			expected: NewSolution(-5.00, -5.00)},
+		{input: NewEquation(1.00, 0.00, -9.00, precision),
+			expected: NewSolution(3.00, -3.00)},
+		{input: NewEquation(1.00, 0.00, -81.00, precision),
+			expected: NewSolution(9.00, -9.00)},
+		{input: NewEquation(2.00, 8.00, 8.00, precision),
+			expected: NewSolution(-2.00, -2.00)},
+		{input: NewEquation(2.00, 16.00, 32.00, precision),
+			expected: NewSolution(-4.00, -4.00)},
+		{input: NewEquation(2.00, 32.00, 64.00, precision),
+			expected: NewSolution(-2.3431, -13.6568)},
+		{input: NewEquation(-3.00, 10.00, 20.00, precision),
+			expected: NewSolution(-1.4065, 4.7398)},
 	}
 
 	for _, test := range tests {
@@ -59,17 +43,7 @@ func TestSolve_GivenRealCoefficients_ReturnsTheCorrectSolution(t *testing.T) {
 }
 
 func TestSolve_GivenZeroQuadraticCoefficent_ReturnsAnError(t *testing.T) {
-	precision := 4
-	input := &equation{
-		coefficients{
-			quadratic: 0,
-			linear:    2,
-			constant:  1,
-		},
-		precision,
-	}
-
-	_, err := Solve(input)
+	_, err := Solve(NewEquation(0.00, 2.00, 1.00, 4))
 	if err == nil {
 		t.Errorf("Expected error didn't occur.")
 	}
@@ -77,13 +51,12 @@ func TestSolve_GivenZeroQuadraticCoefficent_ReturnsAnError(t *testing.T) {
 
 // Verify using calculator at http://www.mathwarehouse.com/quadratic/quadratic-formula-calculator.php
 func TestSolve_WhenDiscriminatIsNegative_ReturnsComplexNumberSolution(t *testing.T) {
-	precision := 4
 	var tests = []struct {
 		input    *equation
 		expected *solution
 	}{
-		{input: formEquation(1.00, 2.00, 4.00, precision),
-			expected: &solution{x1: complex(-1.0000, 1.7320), x2: complex(-1.0000, -1.7320)},
+		{input: NewEquation(1.00, 2.00, 4.00, 4),
+			expected: NewSolution(complex(-1.0000, 1.7320), complex(-1.0000, -1.7320)),
 		},
 	}
 
@@ -94,17 +67,11 @@ func TestSolve_WhenDiscriminatIsNegative_ReturnsComplexNumberSolution(t *testing
 		}
 
 		if actual.x1 != test.expected.x1 {
-			t.Errorf("Expected x1 to be %.*f, but got %.*f", precision, test.expected.x1, precision, actual.x1)
+			t.Errorf("Expected x1 to be %.f, but got %.f", test.expected.x1, actual.x1)
 		}
 
 		if actual.x2 != test.expected.x2 {
-			t.Errorf("Expected x2 to be %.*f, but got %.*f", precision, test.expected.x2, precision, actual.x2)
+			t.Errorf("Expected x2 to be %.f, but got %.f", test.expected.x2, actual.x2)
 		}
 	}
-}
-
-func formEquation(quadratic, linear, constant complex128, precision int) *equation {
-	return &equation{
-		coefficients{quadratic: quadratic, linear: linear, constant: constant},
-		precision}
 }
