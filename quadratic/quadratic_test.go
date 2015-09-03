@@ -75,4 +75,36 @@ func TestSolve_GivenZeroQuadraticCoefficent_ReturnsAnError(t *testing.T) {
 	}
 }
 
-func TestSolve_WhenDiscriminatIsNegative_ReturnsTheCorrectSolution(t *testing.T) {}
+// Verify using calculator at http://www.mathwarehouse.com/quadratic/quadratic-formula-calculator.php
+func TestSolve_WhenDiscriminatIsNegative_ReturnsComplexNumberSolution(t *testing.T) {
+	precision := 4
+	var tests = []struct {
+		input    *equation
+		expected *solution
+	}{
+		{input: formEquation(1.00, 2.00, 4.00, precision),
+			expected: &solution{x1: complex(-1.0000, 1.7320), x2: complex(-1.0000, -1.7320)},
+		},
+	}
+
+	for _, test := range tests {
+		actual, err := Solve(test.input)
+		if err != nil {
+			t.Errorf("Unexpected error ocuurred. ", err)
+		}
+
+		if actual.x1 != test.expected.x1 {
+			t.Errorf("Expected x1 to be %.*f, but got %.*f", precision, test.expected.x1, precision, actual.x1)
+		}
+
+		if actual.x2 != test.expected.x2 {
+			t.Errorf("Expected x2 to be %.*f, but got %.*f", precision, test.expected.x2, precision, actual.x2)
+		}
+	}
+}
+
+func formEquation(quadratic, linear, constant complex128, precision int) *equation {
+	return &equation{
+		coefficients{quadratic: quadratic, linear: linear, constant: constant},
+		precision}
+}

@@ -37,8 +37,8 @@ func Solve(e *equation) (s *solution, err error) {
 	x2 := (-e.linear - discriminant(e.coefficients)) / divisor(e.coefficients)
 
 	s = &solution{
-		x1: roundRealToPrecision(x1, e.precision),
-		x2: roundRealToPrecision(x2, e.precision),
+		x1: complex(roundToPrecision(real(x1), e.precision), roundToPrecision(imag(x1), e.precision)),
+		x2: complex(roundToPrecision(real(x2), e.precision), roundToPrecision(imag(x2), e.precision)),
 	}
 	return
 }
@@ -51,8 +51,7 @@ func divisor(c coefficients) complex128 {
 	return 2 * c.quadratic
 }
 
-func roundRealToPrecision(c complex128, precision int) complex128 {
+func roundToPrecision(f float64, precision int) float64 {
 	multiplier := math.Pow(10, float64(precision))
-	roundedReal := float64(int(real(c)*multiplier)) / multiplier
-	return complex(roundedReal, imag(c))
+	return float64(int(f*multiplier)) / multiplier
 }
