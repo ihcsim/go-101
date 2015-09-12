@@ -33,7 +33,7 @@ Music/David Bowie/Singles 1/02-Changes.ogg`},
 	}
 }
 
-func TestToPls_GivenRecordsWithIrregularSpacing_WillTrimAndConvertToPls(t *testing.T) {
+func TestToPls_GivenRecordsWithIrregularSpacing_CanTrimAndConvertToPls(t *testing.T) {
 	var tests = []struct {
 		input    string
 		expected string
