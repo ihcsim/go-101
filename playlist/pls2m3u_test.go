@@ -1,6 +1,9 @@
 package main
 
-import "testing"
+import (
+	"errors"
+	"testing"
+)
 
 func TestWriteHeader_ReturnM3UHeader(t *testing.T) {
 	expected := "EXTM3U"
@@ -27,7 +30,7 @@ Music/David Bowie/Singles 1/02-Changes.ogg`},
 	}
 
 	for _, test := range tests {
-		if actual := toPls(test.input); test.expected != actual {
+		if actual, _ := toPls(test.input); test.expected != actual {
 			t.Errorf("Expected PLS format to be:\n%s\n\nBut got:\n%s", test.expected, actual)
 		}
 	}
@@ -51,8 +54,52 @@ Music/David Bowie/Singles 1/04-Ziggy Stardust.ogg`},
 	}
 
 	for _, test := range tests {
-		if actual := toPls(test.input); test.expected != actual {
+		if actual, _ := toPls(test.input); test.expected != actual {
 			t.Errorf("Expected PLS format to be:\n%s\n\nBut got:\n%s", test.expected, actual)
+		}
+	}
+}
+
+func TestToPls_GivenMalformedRecordsWithMissingFields_ReturnsAnError(t *testing.T) {
+	var tests = []struct {
+		input         string
+		expected      string
+		expectedError error
+	}{
+		{input: "",
+			expected:      "",
+			expectedError: errors.New("Failed to convert record to PLS format. Missing required properties: filepath, song title, song duration.")},
+		{input: `Title5=David Bowie - Suffragette City
+Length5=206`,
+			expected:      "",
+			expectedError: errors.New("Failed to convert record to PLS format. Missing required properties: filepath.")},
+		{input: `File6=Music/David Bowie/Singles 1/07-The Jean Genie.ogg
+Length6=247`,
+			expected:      "",
+			expectedError: errors.New("Failed to convert record to PLS format. Missing required properties: song title.")},
+		{input: `File7=Music/David Bowie/Singles 1/09-Life On Mars.ogg
+Title7=David Bowie - Life On Mars?`,
+			expected:      "",
+			expectedError: errors.New("Failed to convert record to PLS format. Missing required properties: song duration.")},
+		{input: `File6=Music/David Bowie/Singles 1/07-The Jean Genie.ogg`,
+			expected:      "",
+			expectedError: errors.New("Failed to convert record to PLS format. Missing required properties: song title, song duration.")},
+		{input: `Length6=247`,
+			expected:      "",
+			expectedError: errors.New("Failed to convert record to PLS format. Missing required properties: filepath, song title.")},
+		{input: `Title7=David Bowie - Life On Mars?`,
+			expected:      "",
+			expectedError: errors.New("Failed to convert record to PLS format. Missing required properties: filepath, song duration.")},
+	}
+
+	for _, test := range tests {
+		actual, err := toPls(test.input)
+		if actual != test.expected {
+			t.Errorf("Expected toPls to return an empty string, but got %s", actual)
+		}
+
+		if err.Error() != test.expectedError.Error() {
+			t.Errorf("Expected toPls to return an error with message:\n\"%s\"\n\nBut got:\n\"%s\"", test.expectedError, err)
 		}
 	}
 }
