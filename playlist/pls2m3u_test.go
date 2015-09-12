@@ -103,3 +103,48 @@ Title7=David Bowie - Life On Mars?`,
 		}
 	}
 }
+
+func TestToPls_GivenRecordsWithEmptyProperties_ReturnsRecordWithEmptyProperties(t *testing.T) {
+	var tests = []struct {
+		input    string
+		expected string
+	}{
+		{input: `File8=
+Title8=
+Length8=`,
+			expected: `#EXTINF:-1,UNKNOWN
+UNKNOWN`},
+		{input: `File8=Music/David Bowie/Singles 1/10-Sorrow.ogg
+Title8=
+Length8=`,
+			expected: `#EXTINF:-1,UNKNOWN
+Music/David Bowie/Singles 1/10-Sorrow.ogg`},
+		{input: `File8=
+Title8=David Bowie - Sorrow
+Length8=`,
+			expected: `#EXTINF:-1,David Bowie - Sorrow
+UNKNOWN`},
+		{input: `File8=
+Title8=
+Length8=174`,
+			expected: `#EXTINF:174,UNKNOWN
+UNKNOWN`},
+		{input: `File8=
+Title8=David Bowie - Sorrow
+Length8=174`,
+			expected: `#EXTINF:174,David Bowie - Sorrow
+UNKNOWN`},
+		{input: `File8=Music/David Bowie/Singles 1/10-Sorrow.ogg
+Title8=David Bowie - Sorrow
+Length8=-1`,
+			expected: `#EXTINF:-1,David Bowie - Sorrow
+Music/David Bowie/Singles 1/10-Sorrow.ogg`},
+	}
+
+	for _, test := range tests {
+		actual, _ := toPls(test.input)
+		if actual != test.expected {
+			t.Errorf("Expected PLS format to be:\n%s\n\nBut got:\n%s", test.expected, actual)
+		}
+	}
+}

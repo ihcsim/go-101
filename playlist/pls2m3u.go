@@ -59,8 +59,19 @@ func toPls(m3uRecord string) (string, error) {
 	}
 
 	filename = strings.TrimSpace(rx.ReplaceAllLiteralString(filename, " "))
+	if len(filename) == 0 {
+		filename = "UNKNOWN"
+	}
+
 	title = strings.TrimSpace(rx.ReplaceAllLiteralString(title, " "))
+	if len(title) == 0 {
+		title = "UNKNOWN"
+	}
+
 	duration = strings.TrimSpace(rx.ReplaceAllLiteralString(duration, " "))
+	if len(duration) == 0 {
+		duration = "-1"
+	}
 
 	pls := "#EXTINF:" + duration + "," + title + "\n" + filename
 	return pls, nil
