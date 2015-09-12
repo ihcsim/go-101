@@ -7,11 +7,11 @@ import (
 
 const fileHeader = "#EXTM3U"
 
-func writeHeader() []byte {
-	return []byte(fileHeader)
+func writeHeader() string {
+	return fileHeader
 }
 
-func toPls(m3uRecord []byte) []byte {
+func toPls(m3uRecord string) string {
 	filename := ""
 	title := ""
 	duration := ""
@@ -33,7 +33,7 @@ func toPls(m3uRecord []byte) []byte {
 	title = strings.TrimSpace(rx.ReplaceAllLiteralString(title, " "))
 	duration = strings.TrimSpace(rx.ReplaceAllLiteralString(duration, " "))
 
-	return []byte("#EXTINF:" + duration + "," + title + "\n" + filename)
+	return "#EXTINF:" + duration + "," + title + "\n" + filename
 }
 
 // use bytes.Buffer to write

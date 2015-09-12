@@ -1,13 +1,10 @@
 package main
 
-import (
-	"bytes"
-	"testing"
-)
+import "testing"
 
 func TestWriteHeader_ReturnM3UHeader(t *testing.T) {
-	expected := []byte{'#', 'E', 'X', 'T', 'M', '3', 'U'}
-	if actual := writeHeader(); !bytes.Equal(expected, actual) {
+	expected := "EXTM3U"
+	if actual := writeHeader(); expected == actual {
 		t.Errorf("Expected new file header to be %b, but got %b", expected, actual)
 	}
 }
@@ -30,7 +27,7 @@ Music/David Bowie/Singles 1/02-Changes.ogg`},
 	}
 
 	for _, test := range tests {
-		if actual := toPls([]byte(test.input)); test.expected != string(actual) {
+		if actual := toPls(test.input); test.expected != actual {
 			t.Errorf("Expected PLS format to be:\n%s\n\nBut got:\n%s", test.expected, actual)
 		}
 	}
@@ -54,7 +51,7 @@ Music/David Bowie/Singles 1/04-Ziggy Stardust.ogg`},
 	}
 
 	for _, test := range tests {
-		if actual := toPls([]byte(test.input)); test.expected != string(actual) {
+		if actual := toPls(test.input); test.expected != actual {
 			t.Errorf("Expected PLS format to be:\n%s\n\nBut got:\n%s", test.expected, actual)
 		}
 	}
