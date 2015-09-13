@@ -38,16 +38,129 @@ Length2=-1`,
 	for _, test := range tests {
 		actual, _ := Parse(test.input)
 		expectedSong := test.expected
-		if expectedSong.filepath != actual.filepath {
-			t.Errorf("Expected song filepath to be:\n%s\n\nBut got:\n%s", expectedSong.filepath, actual.filepath)
+		if *expectedSong != *actual {
+			t.Errorf("Expected song to be:\n%+v\n\nBut got:\n%+v", expectedSong, actual)
+		}
+	}
+}
+
+func TestParse_GivenRecordsWithIrregularSpacing_CanTrimAndCreateSongRecord(t *testing.T) {
+	var tests = []struct {
+		input    string
+		expected *SongRecord
+	}{
+		{input: `      File3=Music/David Bowie/Singles 1/03-Starman.ogg   
+   Title3=David Bowie - Starman   
+       Length3=258     `,
+			expected: NewSongRecord(
+				"Music/David Bowie/Singles 1/03-Starman.ogg",
+				"David Bowie - Starman",
+				"258"),
+		},
+		{input: `   File4   =   Music/David    Bowie/Singles     1/04-Ziggy     Stardust.ogg     
+  Title4 =    David Bowie   -    Ziggy Stardust
+ Length4 = 194`,
+			expected: NewSongRecord(
+				"Music/David Bowie/Singles 1/04-Ziggy Stardust.ogg",
+				"David Bowie - Ziggy Stardust",
+				"194"),
+		},
+	}
+
+	for _, test := range tests {
+		actual, _ := Parse(test.input)
+		expectedSong := test.expected
+		if *expectedSong != *actual {
+			t.Errorf("Expected song to be:\n%+v\n\nBut got:\n%+v", expectedSong, actual)
+		}
+	}
+}
+
+func TestParse_GivenMalformedRecordsWithMissingFields_ReturnsAnError(t *testing.T) {
+	var tests = []struct {
+		input         string
+		expectedError error
+	}{
+		{input: "",
+			expectedError: errors.New("Failed to convert record to PLS format. Missing required properties: filepath, song title, song duration."),
+		},
+		{input: `Title5=David Bowie - Suffragette City
+Length5=206`,
+			expectedError: errors.New("Failed to convert record to PLS format. Missing required properties: filepath."),
+		},
+		{input: `File6=Music/David Bowie/Singles 1/07-The Jean Genie.ogg
+Length6=247`,
+			expectedError: errors.New("Failed to convert record to PLS format. Missing required properties: song title."),
+		},
+		{input: `File7=Music/David Bowie/Singles 1/09-Life On Mars.ogg
+Title7=David Bowie - Life On Mars?`,
+			expectedError: errors.New("Failed to convert record to PLS format. Missing required properties: song duration."),
+		},
+		{input: `File6=Music/David Bowie/Singles 1/07-The Jean Genie.ogg`,
+			expectedError: errors.New("Failed to convert record to PLS format. Missing required properties: song title, song duration."),
+		},
+		{input: `Length6=247`,
+			expectedError: errors.New("Failed to convert record to PLS format. Missing required properties: filepath, song title."),
+		},
+		{input: `Title7=David Bowie - Life On Mars?`,
+			expectedError: errors.New("Failed to convert record to PLS format. Missing required properties: filepath, song duration."),
+		},
+	}
+
+	for _, test := range tests {
+		actual, err := Parse(test.input)
+		if actual != nil {
+			t.Errorf("Expected Parse() to return a nil pointer, but got %s", actual)
 		}
 
-		if expectedSong.title != actual.title {
-			t.Errorf("Expected song title to be:\n%s\n\nBut got:\n%s", expectedSong.title, actual.title)
+		if err.Error() != test.expectedError.Error() {
+			t.Errorf("Expected Parse() to return an error with message:\n\"%s\"\n\nBut got:\n\"%s\"", test.expectedError, err)
 		}
+	}
+}
 
-		if expectedSong.duration != actual.duration {
-			t.Errorf("Expected song duration to be:\n%f\n\nBut got:\n%f", expectedSong.duration, actual.duration)
+func TestParse_GivenInputWithEmptyProperties_CanCreateSongRecordWithEmptyProperties(t *testing.T) {
+	var tests = []struct {
+		input    string
+		expected *SongRecord
+	}{
+		{input: `File8=
+Title8=
+Length8=`,
+			expected: NewSongRecord("UNKNOWN", "UNKNOWN", "-1.0"),
+		},
+		{input: `File8=Music/David Bowie/Singles 1/10-Sorrow.ogg
+Title8=
+Length8=`,
+			expected: NewSongRecord("Music/David Bowie/Singles 1/10-Sorrow.ogg", "UNKNOWN", "-1.0"),
+		},
+		{input: `File8=
+Title8=David Bowie - Sorrow
+Length8=`,
+			expected: NewSongRecord("UNKNOWN", "David Bowie - Sorrow", "-1.0"),
+		},
+		{input: `File8=
+Title8=
+Length8=174`,
+			expected: NewSongRecord("UNKNOWN", "UNKNOWN", "174"),
+		},
+		{input: `File8=
+Title8=David Bowie - Sorrow
+Length8=174`,
+			expected: NewSongRecord("UNKNOWN", "David Bowie - Sorrow", "174"),
+		},
+		{input: `File8=Music/David Bowie/Singles 1/10-Sorrow.ogg
+Title8=David Bowie - Sorrow
+Length8=`,
+			expected: NewSongRecord("Music/David Bowie/Singles 1/10-Sorrow.ogg", "David Bowie - Sorrow", "-1.0"),
+		},
+	}
+
+	for _, test := range tests {
+		actual, _ := Parse(test.input)
+		expectedSong := test.expected
+		if *expectedSong != *actual {
+			t.Errorf("Expected song to be:\n%+v\n\nBut got:\n%+v", expectedSong, actual)
 		}
 	}
 }
