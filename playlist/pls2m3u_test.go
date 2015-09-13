@@ -12,6 +12,46 @@ func TestWriteHeader_ReturnM3UHeader(t *testing.T) {
 	}
 }
 
+func TestParse_GivenWellFormedStringInput_CanCreateSongRecord(t *testing.T) {
+	var tests = []struct {
+		input    string
+		expected *SongRecord
+	}{
+		{input: `File1=Music/David Bowie/Singles 1/01-Space Oddity.ogg
+Title1=David Bowie - Space Oddity
+Length1=315`,
+			expected: NewSongRecord(
+				"Music/David Bowie/Singles 1/01-Space Oddity.ogg",
+				"David Bowie - Space Oddity",
+				"315"),
+		},
+		{input: `File2=Music/David Bowie/Singles 1/02-Changes.ogg
+Title2=David Bowie - Changes
+Length2=-1`,
+			expected: NewSongRecord(
+				"Music/David Bowie/Singles 1/02-Changes.ogg",
+				"David Bowie - Changes",
+				"-1"),
+		},
+	}
+
+	for _, test := range tests {
+		actual, _ := Parse(test.input)
+		expectedSong := test.expected
+		if expectedSong.filepath != actual.filepath {
+			t.Errorf("Expected song filepath to be:\n%s\n\nBut got:\n%s", expectedSong.filepath, actual.filepath)
+		}
+
+		if expectedSong.title != actual.title {
+			t.Errorf("Expected song title to be:\n%s\n\nBut got:\n%s", expectedSong.title, actual.title)
+		}
+
+		if expectedSong.duration != actual.duration {
+			t.Errorf("Expected song duration to be:\n%f\n\nBut got:\n%f", expectedSong.duration, actual.duration)
+		}
+	}
+}
+
 func TestToPls_GivenM3URecords_CanConvertToPls(t *testing.T) {
 	var tests = []struct {
 		input    string

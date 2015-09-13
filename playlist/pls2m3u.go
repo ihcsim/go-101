@@ -5,12 +5,95 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+	"time"
 )
 
 const fileHeader = "#EXTM3U"
 
 func writeHeader() string {
 	return fileHeader
+}
+
+// SongRecord represents a song, with the song filepath, title and duration in seconds.
+type SongRecord struct {
+	filepath string
+	title    string
+	duration time.Duration
+}
+
+// NewSongRecord returns a pointer to a SongRecord.
+func NewSongRecord(filepath, title string, duration string) *SongRecord {
+	durationInSeconds, _ := time.ParseDuration(duration + "s")
+	return &SongRecord{
+		filepath: filepath,
+		title:    title,
+		duration: durationInSeconds,
+	}
+}
+
+// Parse takes an input of string type, attempts to extract the song filepath, title and duration
+// from input, and returns a SongRecord type.
+// It returns an error if any of the required song properties are missing.
+func Parse(input string) (*SongRecord, error) {
+	filepath := ""
+	title := ""
+	duration := ""
+
+	foundFilepath := false
+	foundTitle := false
+	foundDuration := false
+
+	rx := regexp.MustCompile(`[\s\p{Zl}\p{Zp}]+`)
+	for _, line := range strings.Split(input, "\n") {
+		line = strings.TrimSpace(line)
+		startAt := strings.Index(line, "=")
+		if strings.HasPrefix(line, "File") {
+			foundFilepath = true
+			filepath = line[startAt+1:]
+		} else if strings.HasPrefix(line, "Title") {
+			foundTitle = true
+			title = line[startAt+1:]
+		} else if strings.HasPrefix(line, "Length") {
+			foundDuration = true
+			duration = line[startAt+1:]
+		}
+	}
+
+	if !foundFilepath || !foundTitle || !foundDuration {
+		missingProperties := make([]string, 0, 3)
+		if !foundFilepath {
+			missingProperties = append(missingProperties, "filepath")
+		}
+
+		if !foundTitle {
+			missingProperties = append(missingProperties, "song title")
+		}
+
+		if !foundDuration {
+			missingProperties = append(missingProperties, "song duration")
+		}
+
+		errMsg := fmt.Sprintf("Failed to convert record to PLS format. Missing required properties: %s.", strings.Join(missingProperties, ", "))
+		err := errors.New(errMsg)
+		return nil, err
+	}
+
+	filepath = strings.TrimSpace(rx.ReplaceAllLiteralString(filepath, " "))
+	if len(filepath) == 0 {
+		filepath = "UNKNOWN"
+	}
+
+	title = strings.TrimSpace(rx.ReplaceAllLiteralString(title, " "))
+	if len(title) == 0 {
+		title = "UNKNOWN"
+	}
+
+	duration = strings.TrimSpace(rx.ReplaceAllLiteralString(duration, " "))
+	if len(duration) == 0 {
+		duration = "-1"
+	}
+
+	return NewSongRecord(filepath, title, duration), nil
 }
 
 func toPls(m3uRecord string) (string, error) {
