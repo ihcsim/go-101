@@ -3,12 +3,56 @@ package main
 import (
 	"errors"
 	"testing"
+	"time"
 )
 
 func TestWriteHeader_ReturnM3UHeader(t *testing.T) {
 	expected := "EXTM3U"
 	if actual := writeHeader(); expected == actual {
 		t.Errorf("Expected new file header to be %b, but got %b", expected, actual)
+	}
+}
+
+func TestNewSongRecord(t *testing.T) {
+	var tests = []struct {
+		filepath         string
+		title            string
+		duration         string
+		expectedFilepath string
+		expectedTitle    string
+		expectedDuration time.Duration
+	}{
+		{
+			filepath:         "Music/David Bowie/Singles 1/01-Space Oddity.ogg",
+			title:            "David Bowie - Space Oddity",
+			duration:         "315",
+			expectedFilepath: "Music/David Bowie/Singles 1/01-Space Oddity.ogg",
+			expectedTitle:    "David Bowie - Space Oddity",
+			expectedDuration: 315 * time.Second,
+		},
+		{
+			filepath:         "",
+			title:            "",
+			duration:         "",
+			expectedFilepath: "UNKNOWN",
+			expectedTitle:    "UNKNOWN",
+			expectedDuration: -1 * time.Second,
+		},
+	}
+
+	for _, test := range tests {
+		s := NewSongRecord(test.filepath, test.title, test.duration)
+		if s.filepath != test.expectedFilepath {
+			t.Errorf("Expected song filepath to be %s, but got %s", test.expectedFilepath, s.filepath)
+		}
+
+		if s.title != test.expectedTitle {
+			t.Errorf("Expected song title to be %s, but got %s", test.expectedTitle, s.title)
+		}
+
+		if s.duration != test.expectedDuration {
+			t.Errorf("Expected song duration to be %s, but got %s", test.expectedDuration, s.duration)
+		}
 	}
 }
 
@@ -36,7 +80,11 @@ Length2=-1`,
 	}
 
 	for _, test := range tests {
-		actual, _ := Parse(test.input)
+		actual, err := Parse(test.input)
+		if err != nil {
+			t.Errorf("Tests failed with unexpected error: %s", err)
+		}
+
 		expectedSong := test.expected
 		if *expectedSong != *actual {
 			t.Errorf("Expected song to be:\n%+v\n\nBut got:\n%+v", expectedSong, actual)
@@ -77,6 +125,7 @@ func TestParse_GivenRecordsWithIrregularSpacing_CanTrimAndCreateSongRecord(t *te
 }
 
 func TestParse_GivenMalformedRecordsWithMissingFields_ReturnsAnError(t *testing.T) {
+	t.Skip("Skipping this test as we haven't decided on the handling of malformed inputs.")
 	var tests = []struct {
 		input         string
 		expectedError error
@@ -108,11 +157,7 @@ Title7=David Bowie - Life On Mars?`,
 	}
 
 	for _, test := range tests {
-		actual, err := Parse(test.input)
-		if actual != nil {
-			t.Errorf("Expected Parse() to return a nil pointer, but got %s", actual)
-		}
-
+		_, err := Parse(test.input)
 		if err.Error() != test.expectedError.Error() {
 			t.Errorf("Expected Parse() to return an error with message:\n\"%s\"\n\nBut got:\n\"%s\"", test.expectedError, err)
 		}
