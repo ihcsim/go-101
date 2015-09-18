@@ -125,7 +125,6 @@ func TestParse_GivenRecordsWithIrregularSpacing_CanTrimAndCreateSongRecord(t *te
 }
 
 func TestParse_GivenMalformedRecordsWithMissingFields_ReturnsAnError(t *testing.T) {
-	t.Skip("Skipping this test as we haven't decided on the handling of malformed inputs.")
 	var tests = []struct {
 		input         string
 		expectedError error

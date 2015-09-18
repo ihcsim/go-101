@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
-	"time"
 )
 
 const fileHeader = "#EXTM3U"
@@ -14,79 +13,23 @@ func writeHeader() string {
 	return fileHeader
 }
 
-// SongRecord represents a song, with the song filepath, title and duration in seconds.
-type SongRecord struct {
-	filepath string
-	title    string
-	duration time.Duration
-}
-
-// NewSongRecord returns a pointer to a SongRecord.
-func NewSongRecord(filepath, title string, duration string) *SongRecord {
-	if len(filepath) == 0 {
-		filepath = "UNKNOWN"
-	}
-
-	if len(title) == 0 {
-		title = "UNKNOWN"
-	}
-
-	if len(duration) == 0 {
-		duration = "-1"
-	}
-
-	durationInSeconds, _ := time.ParseDuration(duration + "s")
-	return &SongRecord{
-		filepath: filepath,
-		title:    title,
-		duration: durationInSeconds,
-	}
-}
-
-func (s *SongRecord) setFilepath(filepath string) {
-	if len(filepath) > 0 {
-		s.filepath = filepath
-	} else {
-		s.filepath = "UNKNOWN"
-	}
-}
-
-func (s *SongRecord) setTitle(title string) {
-	if len(title) > 0 {
-		s.title = title
-	} else {
-		s.title = "UNKNOWN"
-	}
-}
-
-func (s *SongRecord) setDuration(duration string) error {
-	if len(duration) > 0 {
-		d, err := time.ParseDuration(duration + "s")
-		if err != nil {
-			return err
-		}
-		s.duration = d
-	} else {
-		s.duration = -1 * time.Second
-	}
-
-	return nil
-}
-
 // Parse takes an input of string type, attempts to extract the song filepath, title and duration
 // from input, and returns a SongRecord type.
 // It returns an error if any of the required song properties are missing.
 func Parse(input string) (*SongRecord, error) {
-	newSongRecord := NewSongRecord("", "", "")
+	if valid, err := validate(input); !valid && err != nil {
+		return nil, err
+	}
 
-	for _, line := range strings.Split(input, "\n") {
-		property := extractAndTrimProperty(line)
-		if strings.HasPrefix(strings.TrimSpace(line), "File") {
-			newSongRecord.setFilepath(property)
-		} else if strings.HasPrefix(strings.TrimSpace(line), "Title") {
-			newSongRecord.setTitle(property)
-		} else if strings.HasPrefix(strings.TrimSpace(line), "Length") {
-			if err := newSongRecord.setDuration(property); err != nil {
+	newSongRecord := NewSongRecord("", "", "")
+	for _, property := range strings.Split(input, "\n") {
+		p := extractAndTrim(property)
+		if strings.HasPrefix(strings.TrimSpace(property), "File") {
+			newSongRecord.setFilepath(p)
+		} else if strings.HasPrefix(strings.TrimSpace(property), "Title") {
+			newSongRecord.setTitle(p)
+		} else if strings.HasPrefix(strings.TrimSpace(property), "Length") {
+			if err := newSongRecord.setDuration(p); err != nil {
 				return nil, err
 			}
 		}
@@ -95,7 +38,32 @@ func Parse(input string) (*SongRecord, error) {
 	return newSongRecord, nil
 }
 
-func extractAndTrimProperty(input string) string {
+func validate(properties string) (bool, error) {
+	filepathRx := regexp.MustCompile(`File[\d]+[\s]*=`)
+	titleRx := regexp.MustCompile(`Title[\d]+[\s]*=`)
+	durationRx := regexp.MustCompile(`Length[\d]+[\s]*=`)
+
+	missingProperties := make([]string, 0, 3)
+	if !filepathRx.Match([]byte(properties)) {
+		missingProperties = append(missingProperties, "filepath")
+	}
+
+	if !titleRx.Match([]byte(properties)) {
+		missingProperties = append(missingProperties, "song title")
+	}
+
+	if !durationRx.Match([]byte(properties)) {
+		missingProperties = append(missingProperties, "song duration")
+	}
+
+	if len(missingProperties) > 0 {
+		return false, errors.New(fmt.Sprintf("Failed to convert record to PLS format. Missing required properties: %s.", strings.Join(missingProperties, ", ")))
+	}
+
+	return true, nil
+}
+
+func extractAndTrim(input string) string {
 	startAt := strings.Index(input, "=")
 	rx := regexp.MustCompile(`[\s\p{Zl}\p{Zp}]+`)
 	trimmedValue := strings.TrimSpace(rx.ReplaceAllLiteralString(input[startAt+1:], " "))
