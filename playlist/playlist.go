@@ -23,6 +23,6 @@ func main() {
 }
 
 func m3uToPls(b []byte) {
-	songs := readM3uPlaylist(string(b))
+	songs := parseM3UPlaylist(string(b))
 	writePlsPlaylist(songs)
 }

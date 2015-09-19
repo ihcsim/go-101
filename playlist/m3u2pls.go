@@ -15,35 +15,40 @@ package main
 
 import (
 	"fmt"
-	"path/filepath"
 	"strings"
 )
 
-func readM3uPlaylist(data string) (songs []*SongRecord) {
+func parseM3UPlaylist(data string) (songs []*SongRecord) {
 	var songIndex int
-	var filepath, title, duration string
-	for index, line := range strings.Split(data, "\n") {
+	var newSong *SongRecord
+
+	for _, line := range strings.Split(data, "\n") {
 		line = strings.TrimSpace(line)
-		if line == "" || strings.HasPrefix(line, "#EXTM3U") {
+		if !isSongRecord(line) {
 			continue
 		}
 
-		if strings.HasPrefix(line, "#EXTINF:") {
+		if isSongRecordHeader(line) {
 			songIndex += 1
-			title, duration = parseExtinfLine(line)
+			newSong = extractSongRecordHeader(songIndex, line)
 		} else {
-			filepath = strings.Map(mapPlatformDirSeparator, line)
-		}
-
-		if index%2 == 0 && filepath != "" && title != "" && duration != "" {
-			songs = append(songs, NewSongRecord(songIndex, filepath, title, duration))
-			filepath, title, duration = "", "", ""
+			newSong.setFilepath(line)
+			songs = append(songs, newSong)
 		}
 	}
 	return songs
 }
 
-func parseExtinfLine(line string) (title, duration string) {
+func isSongRecord(input string) bool {
+	return input != "" && !strings.HasPrefix(input, "#EXTM3U")
+}
+
+func isSongRecordHeader(input string) bool {
+	return strings.HasPrefix(input, "#EXTINF:")
+}
+
+func extractSongRecordHeader(index int, line string) (s *SongRecord) {
+	var title, duration string
 	if i := strings.IndexAny(line, "-0123456789"); i > -1 {
 		const separator = ","
 		line = line[i:]
@@ -52,14 +57,8 @@ func parseExtinfLine(line string) (title, duration string) {
 			duration = line[:j]
 		}
 	}
-	return
-}
 
-func mapPlatformDirSeparator(char rune) rune {
-	if char == '/' || char == '\\' {
-		return filepath.Separator
-	}
-	return char
+	return NewSongRecord(index, "", title, duration)
 }
 
 func writePlsPlaylist(songs []*SongRecord) error {
