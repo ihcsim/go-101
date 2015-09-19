@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -21,7 +22,12 @@ func Parse(input string) (*SongRecord, error) {
 		return nil, err
 	}
 
-	newSongRecord := NewSongRecord("", "", "")
+	index, err := extractIndex(input)
+	if err != nil {
+		return nil, err
+	}
+
+	newSongRecord := NewSongRecord(index, "", "", "")
 	for _, property := range strings.Split(input, "\n") {
 		p := extractAndTrim(property)
 		if strings.HasPrefix(strings.TrimSpace(property), "File") {
@@ -61,6 +67,16 @@ func validate(properties string) (bool, error) {
 	}
 
 	return true, nil
+}
+
+func extractIndex(input string) (int, error) {
+	indexRx := regexp.MustCompile(`File[\d]+`)
+	loc := indexRx.FindIndex([]byte(input))
+	index, err := strconv.Atoi(input[loc[0]+4 : loc[1]])
+	if err != nil {
+		return 0, err
+	}
+	return index, nil
 }
 
 func extractAndTrim(input string) string {

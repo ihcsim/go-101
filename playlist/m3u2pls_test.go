@@ -14,6 +14,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -22,20 +23,19 @@ import (
 
 func TestReadM3uPlaylist(t *testing.T) {
 	log.SetFlags(0)
-	log.Println("TEST m3u2pls")
 
 	songs := readM3uPlaylist(M3U)
 	for i, song := range songs {
-		if song.Title != ExpectedSongs[i].Title {
-			t.Fatalf("%q != %q", song.Title, ExpectedSongs[i].Title)
+		if song.title != ExpectedSongs[i].title {
+			t.Fatalf("%q != %q", song.title, ExpectedSongs[i].title)
 		}
-		if song.Filename != ExpectedSongs[i].Filename {
-			t.Fatalf("%q != %q", song.Filename,
-				ExpectedSongs[i].Filename)
+		if song.filepath != ExpectedSongs[i].filepath {
+			t.Fatalf("%q != %q", song.filepath,
+				ExpectedSongs[i].filepath)
 		}
-		if song.Seconds != ExpectedSongs[i].Seconds {
-			t.Fatalf("%d != %d", song.Seconds,
-				ExpectedSongs[i].Seconds)
+		if song.duration != ExpectedSongs[i].duration {
+			t.Fatalf("%.0f != %.0f", song.duration,
+				ExpectedSongs[i].duration)
 		}
 	}
 }
@@ -58,7 +58,7 @@ func TestWritePlsPlaylist(t *testing.T) {
 	}
 	reader.Close()
 	if string(actual) != ExpectedPls {
-		t.Fatal("actual != expected")
+		t.Fatal(fmt.Sprintf("actual != expected\nActual:%q\nExpected:%q\n", actual, ExpectedPls))
 	}
 }
 
@@ -70,13 +70,22 @@ Music/David Bowie/Singles 1/02-Changes.ogg
 #EXTINF:258,David Bowie - Starman
 Music/David Bowie/Singles 1/03-Starman.ogg`
 
-var ExpectedSongs = []Song{
-	{"David Bowie - Space Oddity",
-		"Music/David Bowie/Singles 1/01-Space Oddity.ogg", 315},
-	{"David Bowie - Changes",
-		"Music/David Bowie/Singles 1/02-Changes.ogg", -1},
-	{"David Bowie - Starman",
-		"Music/David Bowie/Singles 1/03-Starman.ogg", 258},
+var ExpectedSongs = []*SongRecord{
+	NewSongRecord(
+		1,
+		"Music/David Bowie/Singles 1/01-Space Oddity.ogg",
+		"David Bowie - Space Oddity",
+		"315"),
+	NewSongRecord(
+		2,
+		"Music/David Bowie/Singles 1/02-Changes.ogg",
+		"David Bowie - Changes",
+		"-1"),
+	NewSongRecord(
+		3,
+		"Music/David Bowie/Singles 1/03-Starman.ogg",
+		"David Bowie - Starman",
+		"258"),
 }
 
 var ExpectedPls = `[playlist]

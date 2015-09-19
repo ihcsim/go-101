@@ -21,6 +21,7 @@ func TestParse_GivenWellFormedStringInput_CanCreateSongRecord(t *testing.T) {
 Title1=David Bowie - Space Oddity
 Length1=315`,
 			expected: NewSongRecord(
+				1,
 				"Music/David Bowie/Singles 1/01-Space Oddity.ogg",
 				"David Bowie - Space Oddity",
 				"315"),
@@ -29,6 +30,7 @@ Length1=315`,
 Title2=David Bowie - Changes
 Length2=-1`,
 			expected: NewSongRecord(
+				2,
 				"Music/David Bowie/Singles 1/02-Changes.ogg",
 				"David Bowie - Changes",
 				"-1"),
@@ -57,6 +59,7 @@ func TestParse_GivenRecordsWithIrregularSpacing_CanTrimAndCreateSongRecord(t *te
    Title3=David Bowie - Starman   
        Length3=258     `,
 			expected: NewSongRecord(
+				3,
 				"Music/David Bowie/Singles 1/03-Starman.ogg",
 				"David Bowie - Starman",
 				"258"),
@@ -65,6 +68,7 @@ func TestParse_GivenRecordsWithIrregularSpacing_CanTrimAndCreateSongRecord(t *te
   Title4 =    David Bowie   -    Ziggy Stardust
  Length4 = 194`,
 			expected: NewSongRecord(
+				4,
 				"Music/David Bowie/Singles 1/04-Ziggy Stardust.ogg",
 				"David Bowie - Ziggy Stardust",
 				"194"),
@@ -127,32 +131,32 @@ func TestParse_GivenInputWithEmptyProperties_CanCreateSongRecordWithEmptyPropert
 		{input: `File8=
 Title8=
 Length8=`,
-			expected: NewSongRecord("UNKNOWN", "UNKNOWN", "-1.0"),
+			expected: NewSongRecord(8, "UNKNOWN", "UNKNOWN", "-1.0"),
 		},
 		{input: `File8=Music/David Bowie/Singles 1/10-Sorrow.ogg
 Title8=
 Length8=`,
-			expected: NewSongRecord("Music/David Bowie/Singles 1/10-Sorrow.ogg", "UNKNOWN", "-1.0"),
+			expected: NewSongRecord(8, "Music/David Bowie/Singles 1/10-Sorrow.ogg", "UNKNOWN", "-1.0"),
 		},
 		{input: `File8=
 Title8=David Bowie - Sorrow
 Length8=`,
-			expected: NewSongRecord("UNKNOWN", "David Bowie - Sorrow", "-1.0"),
+			expected: NewSongRecord(8, "UNKNOWN", "David Bowie - Sorrow", "-1.0"),
 		},
 		{input: `File8=
 Title8=
 Length8=174`,
-			expected: NewSongRecord("UNKNOWN", "UNKNOWN", "174"),
+			expected: NewSongRecord(8, "UNKNOWN", "UNKNOWN", "174"),
 		},
 		{input: `File8=
 Title8=David Bowie - Sorrow
 Length8=174`,
-			expected: NewSongRecord("UNKNOWN", "David Bowie - Sorrow", "174"),
+			expected: NewSongRecord(8, "UNKNOWN", "David Bowie - Sorrow", "174"),
 		},
 		{input: `File8=Music/David Bowie/Singles 1/10-Sorrow.ogg
 Title8=David Bowie - Sorrow
 Length8=`,
-			expected: NewSongRecord("Music/David Bowie/Singles 1/10-Sorrow.ogg", "David Bowie - Sorrow", "-1.0"),
+			expected: NewSongRecord(8, "Music/David Bowie/Singles 1/10-Sorrow.ogg", "David Bowie - Sorrow", "-1.0"),
 		},
 	}
 

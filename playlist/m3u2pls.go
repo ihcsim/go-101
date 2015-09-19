@@ -19,15 +19,8 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 )
-
-type Song struct {
-	Title    string
-	Filename string
-	Seconds  int
-}
 
 func main() {
 	if len(os.Args) == 1 || !strings.HasSuffix(os.Args[1], ".m3u") {
@@ -43,41 +36,40 @@ func main() {
 	}
 }
 
-func readM3uPlaylist(data string) (songs []Song) {
-	var song Song
-	for _, line := range strings.Split(data, "\n") {
+func readM3uPlaylist(data string) (songs []*SongRecord) {
+	var songIndex int
+	var filepath, title, duration string
+	for index, line := range strings.Split(data, "\n") {
 		line = strings.TrimSpace(line)
 		if line == "" || strings.HasPrefix(line, "#EXTM3U") {
 			continue
 		}
+
 		if strings.HasPrefix(line, "#EXTINF:") {
-			song.Title, song.Seconds = parseExtinfLine(line)
+			songIndex += 1
+			title, duration = parseExtinfLine(line)
 		} else {
-			song.Filename = strings.Map(mapPlatformDirSeparator, line)
+			filepath = strings.Map(mapPlatformDirSeparator, line)
 		}
-		if song.Filename != "" && song.Title != "" && song.Seconds != 0 {
-			songs = append(songs, song)
-			song = Song{}
+
+		if index%2 == 0 && filepath != "" && title != "" && duration != "" {
+			songs = append(songs, NewSongRecord(songIndex, filepath, title, duration))
+			filepath, title, duration = "", "", ""
 		}
 	}
 	return songs
 }
 
-func parseExtinfLine(line string) (title string, seconds int) {
+func parseExtinfLine(line string) (title, duration string) {
 	if i := strings.IndexAny(line, "-0123456789"); i > -1 {
 		const separator = ","
 		line = line[i:]
 		if j := strings.Index(line, separator); j > -1 {
 			title = line[j+len(separator):]
-			var err error
-			if seconds, err = strconv.Atoi(line[:j]); err != nil {
-				log.Printf("failed to read the duration for '%s': %v\n",
-					title, err)
-				seconds = -1
-			}
+			duration = line[:j]
 		}
 	}
-	return title, seconds
+	return
 }
 
 func mapPlatformDirSeparator(char rune) rune {
@@ -87,13 +79,15 @@ func mapPlatformDirSeparator(char rune) rune {
 	return char
 }
 
-func writePlsPlaylist(songs []Song) {
+func writePlsPlaylist(songs []*SongRecord) error {
 	fmt.Println("[playlist]")
-	for i, song := range songs {
-		i++
-		fmt.Printf("File%d=%s\n", i, song.Filename)
-		fmt.Printf("Title%d=%s\n", i, song.Title)
-		fmt.Printf("Length%d=%d\n", i, song.Seconds)
+	for _, song := range songs {
+		if m3u, err := song.ToM3u(); err != nil {
+			return err
+		} else {
+			fmt.Printf(m3u)
+		}
 	}
 	fmt.Printf("NumberOfEntries=%d\nVersion=2\n", len(songs))
+	return nil
 }

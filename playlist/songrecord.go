@@ -5,13 +5,14 @@ import "time"
 
 // SongRecord represents a song, with the song filepath, title and duration in seconds.
 type SongRecord struct {
+	index    int
 	filepath string
 	title    string
 	duration time.Duration
 }
 
 // NewSongRecord returns a pointer to a SongRecord.
-func NewSongRecord(filepath, title string, duration string) *SongRecord {
+func NewSongRecord(index int, filepath, title string, duration string) *SongRecord {
 	if len(filepath) == 0 {
 		filepath = "UNKNOWN"
 	}
@@ -26,6 +27,7 @@ func NewSongRecord(filepath, title string, duration string) *SongRecord {
 
 	durationInSeconds, _ := time.ParseDuration(duration + "s")
 	return &SongRecord{
+		index:    index,
 		filepath: filepath,
 		title:    title,
 		duration: durationInSeconds,
@@ -63,5 +65,12 @@ func (s *SongRecord) setDuration(duration string) error {
 }
 
 func (s *SongRecord) ToPls() (string, error) {
-	return fmt.Sprintf("#EXTINF:%.0f,%s\n%s", s.duration.Seconds(), s.title, s.filepath), nil
+	return fmt.Sprintf("#EXTINF:%d,%s\n%s", s.duration/time.Second, s.title, s.filepath), nil
+}
+
+func (s *SongRecord) ToM3u() (string, error) {
+	return fmt.Sprintf("File%d=%s\nTitle%d=%s\nLength%d=%d\n",
+		s.index, s.filepath,
+		s.index, s.title,
+		s.index, s.duration/time.Second), nil
 }
