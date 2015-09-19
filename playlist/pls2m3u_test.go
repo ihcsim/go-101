@@ -3,56 +3,12 @@ package main
 import (
 	"errors"
 	"testing"
-	"time"
 )
 
 func TestWriteHeader_ReturnM3UHeader(t *testing.T) {
 	expected := "EXTM3U"
 	if actual := writeHeader(); expected == actual {
 		t.Errorf("Expected new file header to be %b, but got %b", expected, actual)
-	}
-}
-
-func TestNewSongRecord(t *testing.T) {
-	var tests = []struct {
-		filepath         string
-		title            string
-		duration         string
-		expectedFilepath string
-		expectedTitle    string
-		expectedDuration time.Duration
-	}{
-		{
-			filepath:         "Music/David Bowie/Singles 1/01-Space Oddity.ogg",
-			title:            "David Bowie - Space Oddity",
-			duration:         "315",
-			expectedFilepath: "Music/David Bowie/Singles 1/01-Space Oddity.ogg",
-			expectedTitle:    "David Bowie - Space Oddity",
-			expectedDuration: 315 * time.Second,
-		},
-		{
-			filepath:         "",
-			title:            "",
-			duration:         "",
-			expectedFilepath: "UNKNOWN",
-			expectedTitle:    "UNKNOWN",
-			expectedDuration: -1 * time.Second,
-		},
-	}
-
-	for _, test := range tests {
-		s := NewSongRecord(test.filepath, test.title, test.duration)
-		if s.filepath != test.expectedFilepath {
-			t.Errorf("Expected song filepath to be %s, but got %s", test.expectedFilepath, s.filepath)
-		}
-
-		if s.title != test.expectedTitle {
-			t.Errorf("Expected song title to be %s, but got %s", test.expectedTitle, s.title)
-		}
-
-		if s.duration != test.expectedDuration {
-			t.Errorf("Expected song duration to be %s, but got %s", test.expectedDuration, s.duration)
-		}
 	}
 }
 
