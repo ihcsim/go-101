@@ -18,7 +18,11 @@ func main() {
 	if rawBytes, err := ioutil.ReadFile(os.Args[1]); err != nil {
 		log.Fatal(err)
 	} else {
-		songs := readM3uPlaylist(string(rawBytes))
-		writePlsPlaylist(songs)
+		m3uToPls(rawBytes)
 	}
+}
+
+func m3uToPls(b []byte) {
+	songs := readM3uPlaylist(string(b))
+	writePlsPlaylist(songs)
 }
