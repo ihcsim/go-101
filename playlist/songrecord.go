@@ -1,5 +1,6 @@
 package main
 
+import "fmt"
 import "time"
 
 // SongRecord represents a song, with the song filepath, title and duration in seconds.
@@ -59,4 +60,8 @@ func (s *SongRecord) setDuration(duration string) error {
 	}
 
 	return nil
+}
+
+func (s *SongRecord) ToPls() (string, error) {
+	return fmt.Sprintf("#EXTINF:%.0f,%s\n%s", s.duration.Seconds(), s.title, s.filepath), nil
 }
