@@ -38,7 +38,7 @@ Length2=-1`,
 	}
 
 	for _, test := range tests {
-		actual, err := Parse(test.input)
+		actual, err := parsePlsPlaylist(test.input)
 		if err != nil {
 			t.Errorf("Tests failed with unexpected error: %s", err)
 		}
@@ -76,7 +76,7 @@ func TestParse_GivenRecordsWithIrregularSpacing_CanTrimAndCreateSongRecord(t *te
 	}
 
 	for _, test := range tests {
-		actual, _ := Parse(test.input)
+		actual, _ := parsePlsPlaylist(test.input)
 		expectedSong := test.expected
 		if *expectedSong != *actual {
 			t.Errorf("Expected song to be:\n%+v\n\nBut got:\n%+v", expectedSong, actual)
@@ -116,7 +116,7 @@ Title7=David Bowie - Life On Mars?`,
 	}
 
 	for _, test := range tests {
-		_, err := Parse(test.input)
+		_, err := parsePlsPlaylist(test.input)
 		if err.Error() != test.expectedError.Error() {
 			t.Errorf("Expected Parse() to return an error with message:\n\"%s\"\n\nBut got:\n\"%s\"", test.expectedError, err)
 		}
@@ -161,7 +161,7 @@ Length8=`,
 	}
 
 	for _, test := range tests {
-		actual, _ := Parse(test.input)
+		actual, _ := parsePlsPlaylist(test.input)
 		expectedSong := test.expected
 		if *expectedSong != *actual {
 			t.Errorf("Expected song to be:\n%+v\n\nBut got:\n%+v", expectedSong, actual)

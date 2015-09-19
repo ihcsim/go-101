@@ -18,7 +18,7 @@ import (
 	"strings"
 )
 
-func parseM3UPlaylist(data string) (songs []*SongRecord) {
+func parseM3uPlaylist(data string) (songs []*SongRecord) {
 	var songIndex int
 	var newSong *SongRecord
 

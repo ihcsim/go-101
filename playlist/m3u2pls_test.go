@@ -24,7 +24,7 @@ import (
 func TestReadM3uPlaylist(t *testing.T) {
 	log.SetFlags(0)
 
-	songs := parseM3UPlaylist(M3U)
+	songs := parseM3uPlaylist(M3U)
 	for i, song := range songs {
 		if song.title != ExpectedSongs[i].title {
 			t.Fatalf("%q != %q", song.title, ExpectedSongs[i].title)
@@ -41,7 +41,7 @@ func TestReadM3uPlaylist(t *testing.T) {
 }
 
 func TestWritePlsPlaylist(t *testing.T) {
-	songs := parseM3UPlaylist(M3U)
+	songs := parseM3uPlaylist(M3U)
 	var err error
 	stdout := os.Stdout
 	reader, writer := os.Stdin, os.Stdout

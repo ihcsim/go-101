@@ -14,10 +14,10 @@ func writeHeader() string {
 	return fileHeader
 }
 
-// Parse takes an input of string type, attempts to extract the song filepath, title and duration
+// parsePlsPlaylist takes an input of string type, attempts to extract the song filepath, title and duration
 // from input, and returns a SongRecord type.
 // It returns an error if any of the required song properties are missing.
-func Parse(input string) (*SongRecord, error) {
+func parsePlsPlaylist(input string) (*SongRecord, error) {
 	if valid, err := validate(input); !valid && err != nil {
 		return nil, err
 	}
