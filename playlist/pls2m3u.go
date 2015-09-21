@@ -22,18 +22,16 @@ func parsePlsPlaylist(input string) ([]*SongRecord, error) {
 	var newSongRecord *SongRecord
 
 	for _, property := range strings.Split(input, "\n") {
-		p := extractAndTrim(property)
-		if strings.HasPrefix(strings.TrimSpace(property), "File") {
-			songIndex, err := extractSongIndex(property)
-			if err != nil {
+		if isFilepath(property) {
+			if s, err := initSong(property); err != nil {
 				return nil, err
+			} else {
+				newSongRecord = s
 			}
-			newSongRecord = NewSongRecord(songIndex, "", "", "")
-			newSongRecord.setFilepath(p)
-		} else if strings.HasPrefix(strings.TrimSpace(property), "Title") {
-			newSongRecord.setTitle(p)
-		} else if strings.HasPrefix(strings.TrimSpace(property), "Length") {
-			if err := newSongRecord.setDuration(p); err != nil {
+		} else if isTitle(property) {
+			newSongRecord.setTitle(extractAndTrim(property))
+		} else if isDuration(property) {
+			if err := newSongRecord.setDuration(extractAndTrim(property)); err != nil {
 				return nil, err
 			} else {
 				songRecords = append(songRecords, newSongRecord)
@@ -41,6 +39,43 @@ func parsePlsPlaylist(input string) ([]*SongRecord, error) {
 		}
 	}
 	return songRecords, nil
+}
+
+func isFilepath(input string) bool {
+	return strings.HasPrefix(strings.TrimSpace(input), "File")
+}
+
+func initSong(property string) (*SongRecord, error) {
+	songIndex, err := extractSongIndexFromFilepath(property)
+	if err != nil {
+		return nil, err
+	}
+	return NewSongRecord(songIndex, extractAndTrim(property), "", ""), nil
+}
+
+func extractSongIndexFromFilepath(filepathProperty string) (int, error) {
+	indexRx := regexp.MustCompile(`File[\d]+`)
+	loc := indexRx.FindIndex([]byte(filepathProperty))
+	index, err := strconv.Atoi(filepathProperty[loc[0]+4 : loc[1]])
+	if err != nil {
+		return 0, err
+	}
+	return index, nil
+}
+
+func extractAndTrim(input string) string {
+	startAt := strings.Index(input, "=")
+	rx := regexp.MustCompile(`[\s\p{Zl}\p{Zp}]+`)
+	trimmedValue := strings.TrimSpace(rx.ReplaceAllLiteralString(input[startAt+1:], " "))
+	return trimmedValue
+}
+
+func isTitle(input string) bool {
+	return strings.HasPrefix(strings.TrimSpace(input), "Title")
+}
+
+func isDuration(input string) bool {
+	return strings.HasPrefix(strings.TrimSpace(input), "Length")
 }
 
 func validate(properties string) (bool, error) {
@@ -66,21 +101,4 @@ func validate(properties string) (bool, error) {
 	}
 
 	return true, nil
-}
-
-func extractSongIndex(input string) (int, error) {
-	indexRx := regexp.MustCompile(`File[\d]+`)
-	loc := indexRx.FindIndex([]byte(input))
-	index, err := strconv.Atoi(input[loc[0]+4 : loc[1]])
-	if err != nil {
-		return 0, err
-	}
-	return index, nil
-}
-
-func extractAndTrim(input string) string {
-	startAt := strings.Index(input, "=")
-	rx := regexp.MustCompile(`[\s\p{Zl}\p{Zp}]+`)
-	trimmedValue := strings.TrimSpace(rx.ReplaceAllLiteralString(input[startAt+1:], " "))
-	return trimmedValue
 }
