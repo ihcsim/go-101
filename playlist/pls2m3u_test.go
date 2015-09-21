@@ -1,9 +1,6 @@
 package main
 
-import (
-	"errors"
-	"testing"
-)
+import "testing"
 
 func TestWriteHeader_ReturnM3UHeader(t *testing.T) {
 	expected := "EXTM3U"
@@ -80,46 +77,6 @@ func TestParsePlsPlaylist_GivenRecordsWithIrregularSpacing_CanTrimAndCreateSongR
 		expectedSong := test.expected
 		if *expectedSong != *actual[0] {
 			t.Errorf("Expected song to be:\n%+v\n\nBut got:\n%+v", expectedSong, actual)
-		}
-	}
-}
-
-func TestParsePlsPlaylist_GivenMalformedRecordsWithMissingFields_ReturnsAnError(t *testing.T) {
-	t.Skip("")
-	var tests = []struct {
-		input         string
-		expectedError error
-	}{
-		{input: "",
-			expectedError: errors.New("Failed to convert record to PLS format. Missing required properties: filepath, song title, song duration."),
-		},
-		{input: `Title5=David Bowie - Suffragette City
-Length5=206`,
-			expectedError: errors.New("Failed to convert record to PLS format. Missing required properties: filepath."),
-		},
-		{input: `File6=Music/David Bowie/Singles 1/07-The Jean Genie.ogg
-Length6=247`,
-			expectedError: errors.New("Failed to convert record to PLS format. Missing required properties: song title."),
-		},
-		{input: `File7=Music/David Bowie/Singles 1/09-Life On Mars.ogg
-Title7=David Bowie - Life On Mars?`,
-			expectedError: errors.New("Failed to convert record to PLS format. Missing required properties: song duration."),
-		},
-		{input: `File6=Music/David Bowie/Singles 1/07-The Jean Genie.ogg`,
-			expectedError: errors.New("Failed to convert record to PLS format. Missing required properties: song title, song duration."),
-		},
-		{input: `Length6=247`,
-			expectedError: errors.New("Failed to convert record to PLS format. Missing required properties: filepath, song title."),
-		},
-		{input: `Title7=David Bowie - Life On Mars?`,
-			expectedError: errors.New("Failed to convert record to PLS format. Missing required properties: filepath, song duration."),
-		},
-	}
-
-	for _, test := range tests {
-		_, err := parsePlsPlaylist(test.input)
-		if err.Error() != test.expectedError.Error() {
-			t.Errorf("Expected Parse() to return an error with message:\n\"%s\"\n\nBut got:\n\"%s\"", test.expectedError, err)
 		}
 	}
 }

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -76,31 +75,6 @@ func isTitle(input string) bool {
 
 func isDuration(input string) bool {
 	return strings.HasPrefix(strings.TrimSpace(input), "Length")
-}
-
-func validate(properties string) (bool, error) {
-	filepathRx := regexp.MustCompile(`File[\d]+[\s]*=`)
-	titleRx := regexp.MustCompile(`Title[\d]+[\s]*=`)
-	durationRx := regexp.MustCompile(`Length[\d]+[\s]*=`)
-
-	missingProperties := make([]string, 0, 3)
-	if !filepathRx.Match([]byte(properties)) {
-		missingProperties = append(missingProperties, "filepath")
-	}
-
-	if !titleRx.Match([]byte(properties)) {
-		missingProperties = append(missingProperties, "song title")
-	}
-
-	if !durationRx.Match([]byte(properties)) {
-		missingProperties = append(missingProperties, "song duration")
-	}
-
-	if len(missingProperties) > 0 {
-		return false, errors.New(fmt.Sprintf("Failed to convert record to PLS format. Missing required properties: %s.", strings.Join(missingProperties, ", ")))
-	}
-
-	return true, nil
 }
 
 func writeM3uPlaylist(songRecords []*SongRecord) error {
