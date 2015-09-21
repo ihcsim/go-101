@@ -12,7 +12,7 @@ func TestWriteHeader_ReturnM3UHeader(t *testing.T) {
 	}
 }
 
-func TestParse_GivenWellFormedStringInput_CanCreateSongRecord(t *testing.T) {
+func TestParsePlsPlaylist_GivenWellFormedStringInput_CanCreateSongRecord(t *testing.T) {
 	var tests = []struct {
 		input    string
 		expected *SongRecord
@@ -50,7 +50,7 @@ Length2=-1`,
 	}
 }
 
-func TestParse_GivenRecordsWithIrregularSpacing_CanTrimAndCreateSongRecord(t *testing.T) {
+func TestParsePlsPlaylist_GivenRecordsWithIrregularSpacing_CanTrimAndCreateSongRecord(t *testing.T) {
 	var tests = []struct {
 		input    string
 		expected *SongRecord
@@ -84,7 +84,7 @@ func TestParse_GivenRecordsWithIrregularSpacing_CanTrimAndCreateSongRecord(t *te
 	}
 }
 
-func TestParse_GivenMalformedRecordsWithMissingFields_ReturnsAnError(t *testing.T) {
+func TestParsePlsPlaylist_GivenMalformedRecordsWithMissingFields_ReturnsAnError(t *testing.T) {
 	t.Skip("")
 	var tests = []struct {
 		input         string
@@ -124,7 +124,7 @@ Title7=David Bowie - Life On Mars?`,
 	}
 }
 
-func TestParse_GivenInputWithEmptyProperties_CanCreateSongRecordWithEmptyProperties(t *testing.T) {
+func TestParsePlsPlaylist_GivenInputWithEmptyProperties_CanCreateSongRecordWithEmptyProperties(t *testing.T) {
 	var tests = []struct {
 		input    string
 		expected *SongRecord
