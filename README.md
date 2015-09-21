@@ -44,3 +44,4 @@ Package | Description
 `discountcalculator` | A discount calculator demonstrating the usage of function values and closures.
 `bigdigits` | A program that takes a numeric input and magnifies the number to stdout. Run `$GOPATH/bin/bigdigits --help` for usages.
 `statistics` | A web handler to demonstrate arithmetic operations on float64 type.
+`playlist` | A string format convertor that converts M3U records to PLS records to demonstrate string manipulation and regular expressions.
