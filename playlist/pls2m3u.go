@@ -14,34 +14,33 @@ func writeHeader() string {
 	return fileHeader
 }
 
-// parsePlsPlaylist takes an input of string type, attempts to extract the song filepath, title and duration
-// from input, and returns a SongRecord type.
+// parsePlsPlaylist takes an input of string type, attempts to extract all the song filepaths, titles and durations
+// from input, and returns a slice of SongRecords.
 // It returns an error if any of the required song properties are missing.
-func parsePlsPlaylist(input string) (*SongRecord, error) {
-	if valid, err := validate(input); !valid && err != nil {
-		return nil, err
-	}
+func parsePlsPlaylist(input string) ([]*SongRecord, error) {
+	songRecords := make([]*SongRecord, 0)
+	var newSongRecord *SongRecord
 
-	index, err := extractIndex(input)
-	if err != nil {
-		return nil, err
-	}
-
-	newSongRecord := NewSongRecord(index, "", "", "")
 	for _, property := range strings.Split(input, "\n") {
 		p := extractAndTrim(property)
 		if strings.HasPrefix(strings.TrimSpace(property), "File") {
+			songIndex, err := extractSongIndex(property)
+			if err != nil {
+				return nil, err
+			}
+			newSongRecord = NewSongRecord(songIndex, "", "", "")
 			newSongRecord.setFilepath(p)
 		} else if strings.HasPrefix(strings.TrimSpace(property), "Title") {
 			newSongRecord.setTitle(p)
 		} else if strings.HasPrefix(strings.TrimSpace(property), "Length") {
 			if err := newSongRecord.setDuration(p); err != nil {
 				return nil, err
+			} else {
+				songRecords = append(songRecords, newSongRecord)
 			}
 		}
 	}
-
-	return newSongRecord, nil
+	return songRecords, nil
 }
 
 func validate(properties string) (bool, error) {
@@ -69,7 +68,7 @@ func validate(properties string) (bool, error) {
 	return true, nil
 }
 
-func extractIndex(input string) (int, error) {
+func extractSongIndex(input string) (int, error) {
 	indexRx := regexp.MustCompile(`File[\d]+`)
 	loc := indexRx.FindIndex([]byte(input))
 	index, err := strconv.Atoi(input[loc[0]+4 : loc[1]])
