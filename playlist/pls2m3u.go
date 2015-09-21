@@ -102,3 +102,16 @@ func validate(properties string) (bool, error) {
 
 	return true, nil
 }
+
+func writeM3uPlaylist(songRecords []*SongRecord) error {
+	fmt.Println(writeHeader())
+	for _, songRecord := range songRecords {
+		if r, err := songRecord.ToM3u(); err != nil {
+			return err
+		} else {
+			fmt.Print(r)
+		}
+	}
+
+	return nil
+}
