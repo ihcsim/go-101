@@ -65,12 +65,12 @@ func (s *SongRecord) setDuration(duration string) error {
 }
 
 func (s *SongRecord) ToPls() (string, error) {
-	return fmt.Sprintf("#EXTINF:%d,%s\n%s", s.duration/time.Second, s.title, s.filepath), nil
-}
-
-func (s *SongRecord) ToM3u() (string, error) {
 	return fmt.Sprintf("File%d=%s\nTitle%d=%s\nLength%d=%d\n",
 		s.index, s.filepath,
 		s.index, s.title,
 		s.index, s.duration/time.Second), nil
+}
+
+func (s *SongRecord) ToM3u() (string, error) {
+	return fmt.Sprintf("#EXTINF:%d,%s\n%s\n", s.duration/time.Second, s.title, s.filepath), nil
 }

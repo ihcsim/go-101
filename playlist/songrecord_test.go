@@ -13,20 +13,24 @@ func TestToPls_CanConvertToPls(t *testing.T) {
 			"Music/David Bowie/Singles 1/01-Space Oddity.ogg",
 			"David Bowie - Space Oddity",
 			"315"),
-			expected: `#EXTINF:315,David Bowie - Space Oddity
-Music/David Bowie/Singles 1/01-Space Oddity.ogg`},
+			expected: `File1=Music/David Bowie/Singles 1/01-Space Oddity.ogg
+Title1=David Bowie - Space Oddity
+Length1=315
+`},
 		{input: NewSongRecord(
 			2,
 			"Music/David Bowie/Singles 1/02-Changes.ogg",
 			"David Bowie - Changes",
 			"-1"),
-			expected: `#EXTINF:-1,David Bowie - Changes
-Music/David Bowie/Singles 1/02-Changes.ogg`},
+			expected: `File2=Music/David Bowie/Singles 1/02-Changes.ogg
+Title2=David Bowie - Changes
+Length2=-1
+`},
 	}
 
 	for _, test := range tests {
 		if actual, _ := test.input.ToPls(); test.expected != actual {
-			t.Errorf("Expected PLS format to be:\n%s\n\nBut got:\n%s", test.expected, actual)
+			t.Errorf("Expected PLS format to be:\n%q\n\nBut got:\n%q", test.expected, actual)
 		}
 	}
 }
@@ -37,29 +41,41 @@ func TestToPls_GivenRecordsWithEmptyProperties_PropertiesAreMarkedAsUnknown(t *t
 		expected string
 	}{
 		{input: NewSongRecord(0, "", "", ""),
-			expected: `#EXTINF:-1,UNKNOWN
-UNKNOWN`},
+			expected: `File0=UNKNOWN
+Title0=UNKNOWN
+Length0=-1
+`},
 		{input: NewSongRecord(1, "Music/David Bowie/Singles 1/10-Sorrow.ogg", "", ""),
-			expected: `#EXTINF:-1,UNKNOWN
-Music/David Bowie/Singles 1/10-Sorrow.ogg`},
+			expected: `File1=Music/David Bowie/Singles 1/10-Sorrow.ogg
+Title1=UNKNOWN
+Length1=-1
+`},
 		{input: NewSongRecord(2, "", "David Bowie - Sorrow", ""),
-			expected: `#EXTINF:-1,David Bowie - Sorrow
-UNKNOWN`},
+			expected: `File2=UNKNOWN
+Title2=David Bowie - Sorrow
+Length2=-1
+`},
 		{input: NewSongRecord(0, "", "", "174"),
-			expected: `#EXTINF:174,UNKNOWN
-UNKNOWN`},
+			expected: `File0=UNKNOWN
+Title0=UNKNOWN
+Length0=174
+`},
 		{input: NewSongRecord(2, "", "David Bowie - Sorrow", "174"),
-			expected: `#EXTINF:174,David Bowie - Sorrow
-UNKNOWN`},
+			expected: `File2=UNKNOWN
+Title2=David Bowie - Sorrow
+Length2=174
+`},
 		{input: NewSongRecord(1, "Music/David Bowie/Singles 1/10-Sorrow.ogg", "David Bowie - Sorrow", "-1"),
-			expected: `#EXTINF:-1,David Bowie - Sorrow
-Music/David Bowie/Singles 1/10-Sorrow.ogg`},
+			expected: `File1=Music/David Bowie/Singles 1/10-Sorrow.ogg
+Title1=David Bowie - Sorrow
+Length1=-1
+`},
 	}
 
 	for _, test := range tests {
 		actual, _ := test.input.ToPls()
 		if actual != test.expected {
-			t.Errorf("Expected PLS format to be:\n%s\n\nBut got:\n%s", test.expected, actual)
+			t.Errorf("Expected PLS format to be:\n%q\n\nBut got:\n%q", test.expected, actual)
 		}
 	}
 }

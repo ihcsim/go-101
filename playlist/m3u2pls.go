@@ -64,10 +64,10 @@ func extractSongRecordHeader(index int, line string) (s *SongRecord) {
 func writePlsPlaylist(songs []*SongRecord) error {
 	fmt.Println("[playlist]")
 	for _, song := range songs {
-		if m3u, err := song.ToM3u(); err != nil {
+		if pls, err := song.ToPls(); err != nil {
 			return err
 		} else {
-			fmt.Printf(m3u)
+			fmt.Printf(pls)
 		}
 	}
 	fmt.Printf("NumberOfEntries=%d\nVersion=2\n", len(songs))
