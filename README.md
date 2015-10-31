@@ -1,12 +1,11 @@
-Golang Tutorial
-===============
+# go101
 
 Some basics on golang including answers to exercises on the golang tour.
 
 To get all the codes, clone this repository to your `$GOPATH` workspace,
 
 ```
-$ go get github.com/ihcsim/golang-tutorial
+$ go get github.com/ihcsim/go101
 ```
 
 Exercise | Package | Exercise URL
@@ -26,7 +25,7 @@ Equivalent Binary Trees | `binarytree` | https://tour.golang.org/concurrency/7
 To run the answer of an exercise,
 
 ```
-$ cd github.com/ihcsim/golang-tutorial/<folder_of_exercise>
+$ cd github.com/ihcsim/go101/<folder_of_exercise>
 $ go run main.go
 ```
  
