@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 )
@@ -42,7 +43,26 @@ Soundex is a phonetic algorithm for indexing names by sound, as pronounced in En
 }
 
 func testSuite(response http.ResponseWriter, request *http.Request) {
-	if _, err := response.Write([]byte("Run tests")); err != nil {
+	testData, err := ioutil.ReadFile("data.txt")
+	if err != nil {
+		log.Printf("%s\n", err)
+		response.Write([]byte(fmt.Sprintf("%v", err)))
+		response.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	var testResult bytes.Buffer
+	for _, test := range strings.Split(string(testData), "\n") {
+		if len(test) == 0 {
+			continue
+		}
+		inputs := strings.Split(test, " ")
+		actual, expected := Soundex(inputs[1]), inputs[0]
+		output := fmt.Sprintf("%s %s %s\n", inputs[1], expected, actual)
+		testResult.Write([]byte(output))
+	}
+
+	if _, err := response.Write(testResult.Bytes()); err != nil {
 		log.Printf("%v\n", err)
 	}
 }

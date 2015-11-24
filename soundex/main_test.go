@@ -22,6 +22,7 @@ func TestSoundex(t *testing.T) {
 		{input: "Jennifer", expected: "J516"},
 		{input: "Ash", expected: "A200"},
 		{input: "Loretta", expected: "L630"},
+		{input: "Burroughs", expected: "B620"},
 	}
 
 	for _, test := range tests {
