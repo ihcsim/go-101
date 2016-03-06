@@ -47,3 +47,4 @@ Package              | Description
 `soundex`            | [Soundex algorithm](https://en.wikipedia.org/wiki/Soundex) to convert names into their corresponding soundex code. Supported URL: localhost:7000, localhost:7000/?name=<name>, localhost:7000/testsuite
 `unique`             | A function to eliminates duplicated integers in a slice.
 `flatten`            | A function to convert a 2D matrix into a 1D slice.
+`make2D`             | A function to convert a 1D slice to a 2D matrix where each inner slice has the same depth.
