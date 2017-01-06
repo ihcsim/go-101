@@ -1,5 +1,7 @@
 # go101
 
+[![Codeship Status for ihcsim/go-101](https://app.codeship.com/projects/125da7e0-b669-0134-ad91-7ea8c0f9c13a/status?branch=master)](https://app.codeship.com/projects/194356)
+
 Some basics on golang including answers to exercises on the golang tour.
 
 To get all the codes, clone this repository to your `$GOPATH` workspace,
@@ -28,7 +30,7 @@ To run the answer of an exercise,
 $ cd github.com/ihcsim/go101/<folder_of_exercise>
 $ go run main.go
 ```
- 
+
 To fetch dependencies:
 
 1. For picture exercise, `$ go get golang.org/x/tour/pic`
